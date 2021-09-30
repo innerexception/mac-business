@@ -1,0 +1,54 @@
+Bracketed Strategic Global Auto-battler
+
+    In the near future, the largest companies have harnessed eldritch energies in order to meet the growth targets demanded by their shareholders.
+    You have been volunteered for the pan-global team cohesion spectacle to power our profit rituals. 
+    Your employment is dependent on your enthusiasm.
+    Your enthusiasm pleases us.
+
+    To win a bracket:
+        Reduce opponent's morale to 0
+        Soul is spendable
+        Gain 10 capital
+
+    Employers grant defenses
+
+    Choose an employer:
+        -Black (Chaotic Neutral, Azathoth, Wernstern Media)
+            Morale damage focus, Minimal meat damage abilities
+            -Tweet of death (2 morale damage)
+            -Mouthpeice of Chaos (1 morale dmg + 1 per previous tweet)
+            -Casting Couch (1 meat damage)
+            -Troll army (+1 morale, +1 per tweet)
+            -Branded content (+1 productivity, +1 per tweet)
+        -Red (Chaotic Evil, Uvhash, Rontheon Arma)
+            Meat damage only
+            -Drone strike (2 meat damage)
+            -Both sides (+2 productivity)
+            -War of Terror (3 meat damage if opponent has more than 5 productivity)
+            -Information Warfare (+1 morale, 3 meat damage if opponent is black/gray)
+            -
+        -Green (Lawful Neutral, C'thalpa, Monserto Ag)
+            Productivity focus
+            -Seed Patents (+3 productivity)
+            -Shelf Stable (+1 productivity, +4 if opponent is blue)
+            -Monoculture (+)
+            -Self-seeding
+        -Gray (True Neutral, Hastur, McKearny Consulting)
+            CC focus on preventing actions, harnessing enemy actions
+            -NGO funding (Prevent next opponent action)
+            -Growth Plan (Steal 2 productivity)
+            -Austerity measures (2 morale damage)
+            -Private army (2 meat damage)
+
+        -Blue (Neutral Evil, Nyarlathotep, DaPunt Chemical)
+
+        -Yellow (Chaotic Evil, Yog-Sothoth, PardonPharma)
+
+    Choose a creature. Configure with a T1 ability and a behavior plan
+    Once at least 8 players are locked in, a tourney will start
+    After the first bracket, you can view your next opponent's historical configurations
+    You can then configure T2 abilities and behaviors
+    After 5 minutes, or when all players have locked in, the next bracket is calculated
+    Eliminated players can bet on the current brackets, or the winner
+    This is the only way to win coins for cosmetics and votes for mods to the world
+    Winners get unique cosmetics but no coins
