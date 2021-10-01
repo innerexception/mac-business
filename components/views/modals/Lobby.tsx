@@ -1,14 +1,14 @@
 import * as React from 'react'
 import AppStyles, { colors } from '../../../AppStyles';
 import { Button, TopBar } from '../../Shared';
-import { onCreateMatch, onJoinMatch, onStartMatch, onHideModal, onUpdatePlayer } from '../../uiManager/Thunks';
+import { onJoinMatch, onHideModal, onUpdatePlayer } from '../../uiManager/Thunks';
 import { connect } from 'react-redux';
 import Dialog from '../Dialog';
 import { Avatars } from '../../../enum';
 
 interface Props {
-    me?: PlayerState
-    match?:Match
+    me?: PlayerStats
+    match?:Tournament
 }
 
 interface State { 
@@ -18,16 +18,12 @@ interface State {
 
 @(connect((state: RState) => ({
     me: state.onlineAccount,
-    match: state.match
+    match: state.tournament
 })) as any)
 export default class Lobby extends React.PureComponent<Props,State> {
     state:State = { 
         playerName: this.props.me.name, 
         matchCode: '',
-    }
-
-    createMatch = () => {
-        onCreateMatch(this.props.me.uid)
     }
 
     render(){

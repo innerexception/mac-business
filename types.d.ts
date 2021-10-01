@@ -1,51 +1,47 @@
-declare enum Rounds {
-    Danger=0, DoubleDanger=1, MostExtremeDanger=2
-}
-
-interface Match {
+interface Tournament {
     id:string
-    hostId:string
-    activePlayerId:string
-    activeQuestion: Question
-    round: import('./enum').Rounds
-    roundCategories: RoundCategories
-    isStarted:boolean
+    activeBracket: number
+    brackets: Array<Bracket>
 }
 
-interface RoundCategories {
-    [Rounds.Danger]: {categories: Array<string>, questions: Array<Question>}
-    [Rounds.DoubleDanger]: {categories: Array<string>, questions: Array<Question>}
-    [Rounds.MostExtremeDanger]: {categories: Array<string>, questions: Array<Question>}
+interface Bracket {
+    uid:string
+    round: number
+    player1: PlayerBuild
+    player2: PlayerBuild
 }
 
-interface Question {
-    id:string
-    category: string
-    value: string
-    question: string
-    answer: string
-    round: string
-    air_date: string
-    show_number:number
-    bonus: boolean
+interface Ability {
+    corp: import('./enum').Corporation
+    special: import('./enum').SpecialEffect
+    moraleCost: number
+    moraleDmg: number
+    soulCost: number
+    soulDmg: number
+    capitalCost: number
+    capitalDmg: number
 }
 
-interface PlayerState {
+interface PlayerBuild {
+    playerId:string
+    abilities: Array<Ability>
+}
+
+interface PlayerStats {
     uid:string
     name:string
     avatarIndex:number
-    isBuzzed: boolean
-    answers: number
-    correctAnswers: number
-    streak: number
-    currentWinnings: number
-    totalWinnings: number
+    wins: number
 }
 
+interface CorpoData {
+    color: string
+}
+
+interface ModalState { modal: import('./enum').Modal, data?: any }
+
 interface RState {
-    modalState: import('./enum').Modal
-    modalData: any
-    match: Match
-    players: Array<PlayerState>
-    onlineAccount:PlayerState
+    modalState: ModalState
+    tournament: Tournament
+    onlineAccount: PlayerStats
 }

@@ -1,14 +1,13 @@
 import * as React from 'react'
 import AppStyles from '../../../AppStyles';
-import { Button } from '../../Shared';
-import { onHideModal, onLeaveMatch, onStartMatch } from '../../uiManager/Thunks';
+import { Button, TopBar } from '../../Shared';
+import { onHideModal, onLeaveMatch } from '../../uiManager/Thunks';
 import { connect } from 'react-redux';
 import { Avatar } from './Lobby';
 
 interface Props {
-    match?:Match
-    myId?:string
-    players?:Array<PlayerState>
+    match?:Tournament
+    me?:PlayerStats
 }
 
 interface State { 
@@ -17,39 +16,30 @@ interface State {
 }
 
 @(connect((state: RState) => ({
-    match: state.match,
-    players: state.players,
-    myId: state.onlineAccount.uid
+    match: state.tournament,
+    me: state.onlineAccount
 })) as any)
 export default class MatchLobby extends React.PureComponent<Props,State> {
-    state = { }
+    state = { 
+        playerName:'',
+        isLoading:false
+    }
 
     componentDidMount(){
-        this.state.lobby = new Audio(lobbyMusic)
-        this.state.lobby.loop = true
-        this.state.lobby.play()
+        // this.state.lobby = new Audio(lobbyMusic)
+        // this.state.lobby.loop = true
+        // this.state.lobby.play()
     }
 
     componentWillUnmount(){
-        this.state.lobby.pause()
-    }
-
-    startMatch = () => {
-        onMatchStart(
-            this.props.activeSession.sessionName, 
-            this.props.currentUser, 
-            this.props.server)
-    }
-
-    getErrors = () => {
-        if(this.props.activeSession.players.length < 2) return 'Waiting for more employees to join...'
+        //this.state.lobby.pause()
     }
 
     render(){
         return (
             <div style={{...AppStyles.window}}>
                 {TopBar('MacBusiness')}
-                <div style={{padding:'0.5em'}}>
+                {/* <div style={{padding:'0.5em'}}>
                     <h3>Joining conference at</h3>
                     <h3>{this.props.activeSession.sessionName} Corp</h3>
                     <div style={{marginBottom:'1em', alignItems:'center', overflow:'auto', maxHeight:'66vh'}}>
@@ -65,7 +55,7 @@ export default class MatchLobby extends React.PureComponent<Props,State> {
                             onClick={this.startMatch}>
                             <div style={{border:'1px solid', borderRadius: '3px', opacity: this.getErrors() ? 0.5 : 1}}>Start</div>
                         </div>}
-                </div>
+                </div> */}
             </div>
         )
     }

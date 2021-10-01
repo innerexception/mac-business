@@ -3,16 +3,12 @@ export enum UIReducerActions {
     LOGIN_FAILED,
     HIDE_MODAL,
     MATCH_UPDATED,
-    MATCH_CREATED,
     SHOW_MODAL,
     LOGIN_SUCCESS,
-    MATCH_JOIN,
     UPDATE_NAME,
     LEAVE_MATCH,
     JOIN_EXISTING,
-    MATCH_HOSTED,
-    UPDATE_PLAYER,
-    PLAYERS_UPDATED
+    UPDATE_PLAYER
 }
 
 export const FONT_DEFAULT = {
@@ -21,20 +17,34 @@ export const FONT_DEFAULT = {
     color:'black',
 }
 
-export const PlayerColors = [
-    '#1e90ff',
-    '#ffa500',
-    '#ff0000',
-    '#008000',
-    '#882D17',
-    '#708090'
-]
-
-export enum Rounds {
-    Danger, DoubleDanger, MostExtremeDanger
+export enum CloudFunctions {
+    onTryPlayerJoin='onTryPlayerJoin',
+    onPlayerLeave='onPlayerLeave',
+    onSubmitPlayerBuild='onSubmitPlayerBuild',
+    onSubmitPlayerWager='onSubmitPlayerWager'
 }
 
-export const RoundNames = ['Danger', 'Double Danger', 'Most Extreme Danger']
+export enum SpecialEffect {
+    
+}
+
+export enum Corporation {
+    Wernstern='Wernstern Media',
+    Rontheon='Rontheon Arma',
+    HellBank='Hells Fargo Bank',
+    McKillsie='McKillsie Consulting',
+    Elysium='Elysium Medical Group',
+    PardonPharma='PardonPharma'
+}
+
+export const CorpoData:Record<Corporation, CorpoData> = {
+    [Corporation.Elysium]: {color:'0x0000ff'},
+    [Corporation.HellBank]: {color:'0xff0000'},
+    [Corporation.McKillsie]: {color:'0xcccccc'},
+    [Corporation.PardonPharma]: {color:'0xff00ff'},
+    [Corporation.Rontheon]: {color:'0xff0000'},
+    [Corporation.Wernstern]: {color:'0x00ff00'},
+}
 
 export enum Modal {
     HELP,
