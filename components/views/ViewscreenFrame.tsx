@@ -9,6 +9,7 @@ import Provider from '../../firebase/Network';
 import BracketView from './BracketView';
 import BuildEdit from './modals/BuildEdit';
 import ChooseEmployer from './modals/ChooseEmployer';
+import Voting from './modals/Voting';
 
 interface Props {
     modalState?: ModalState,
@@ -38,14 +39,15 @@ export default class ViewscreenFrame extends React.Component<Props> {
                 tourney ? 
                 <div style={{position:'relative', display:'flex', justifyContent:'center', borderRadius:'5px', margin:'1px', width:'100%', height:'100%', overflowX:'auto'}}>
                     {this.props.modalState && <div style={{position:'absolute', top:0, left:0}}>{this.getModal()}</div>}
+                    {this.props.tournament.isVoting && <div style={{position:'absolute', top:0, left:0}}><Voting/></div>}
                     {!this.props.me.tournamentId && !this.props.tournament.hasStarted && Button(true, ()=>onShowModal(Modal.CHOOSE_EMPLOYMENT), 'Join Tournament')}
                     <div style={{display:'flex'}}>
-                        {new Array(tourney.finalBracket).fill({}).map((b,i)=>
+                        {new Array(tourney.finalRound).fill({}).map((b,i)=>
                         <div style={{width:'100px', textAlign:'center'}}>Round {i}</div>
                         )}
                     </div>
                     <div style={{overflow:'auto', height:'55vh'}}>
-                        {new Array(tourney.finalBracket).fill({}).map((b,i)=>
+                        {new Array(tourney.finalRound).fill({}).map((b,i)=>
                         <div style={{width:'100px'}}><BracketView round={i}/></div>
                         )}
                     </div>

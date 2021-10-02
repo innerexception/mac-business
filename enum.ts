@@ -21,7 +21,19 @@ export enum CloudFunctions {
     onTryPlayerJoin='onTryPlayerJoin',
     onPlayerLeave='onPlayerLeave',
     onSubmitPlayerBuild='onSubmitPlayerBuild',
-    onSubmitPlayerWager='onSubmitPlayerWager'
+    onSubmitPlayerWager='onSubmitPlayerWager',
+    onSubmitPlayerVote='onSubmitPlayerVote'
+}
+
+export enum Edict {
+    SoulDeficit='SoulDeficit'
+}
+
+export const Edicts:Record<Edict, EdictData> = {
+    [Edict.SoulDeficit]: {
+        name: Edict.SoulDeficit,
+        description: "Soul values may go negative. Our extra dimensional 'friends' are more attracted to such people."
+    }
 }
 
 export enum Ability {

@@ -20,7 +20,7 @@ export default (props:Props) =>
     </div>
         
 interface TipProps {
-    ability:Ability
+    ability:AbilityData
 }
 
 export const AbilityTooltip = ({ability}:TipProps) => 

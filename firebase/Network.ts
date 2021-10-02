@@ -6,10 +6,10 @@ import 'firebase/auth';
 import 'firebase/firestore';
 import 'firebase/functions';
 import { Schemas } from './Schemas'
-import { onLoginUser, onTournamentUpdated, onLogoutUser, onJoinExisting, onHideModal } from '../components/uiManager/Thunks';
+import { onLoginUser, onTournamentUpdated, onLogoutUser, onJoinExisting, onHideModal, onUpdatePlayer } from '../components/uiManager/Thunks';
 import { getNewPlayer } from '../components/Util';
 import { v4 } from 'uuid';
-import { CloudFunctions } from '../enum';
+import { CloudFunctions, Edict } from '../enum';
 
 firebase.initializeApp(firebaseConfig);
 
@@ -18,6 +18,7 @@ class Network {
     auth: firebase.auth.Auth
     functions: firebase.functions.Functions
     unsub: Function
+    unsub2: Function
 
     constructor(){
         this.db = firebase.firestore()
@@ -34,7 +35,7 @@ class Network {
                 const tourney = await this.getTournament()
                 if(tourney){
                     onJoinExisting(userData, tourney)
-                    this.subscribeToTourney(tourney.id)
+                    this.subscribeToTourney(tourney.id, userData.uid)
                 }
                 onLoginUser(userData)
             } else {
@@ -61,7 +62,7 @@ class Network {
         if(ref.exists){
             let match = ref.data() as Tournament
             this.tryJoinTournament(player)
-            this.subscribeToTourney(match.id)
+            this.subscribeToTourney(match.id, player.uid)
             onHideModal()
         }
     }
@@ -72,7 +73,12 @@ class Network {
         return Tournaments[0]
     }
 
-    subscribeToTourney = (id:string) => {
+    fetchEdicts = async () => {
+        let ref = await this.db.collection(Schemas.Collections.Edicts.collectionName).get()
+        return ref.docs.map(d=>d.data() as EdictData)
+    }
+
+    subscribeToTourney = (id:string, playerId:string) => {
         if(this.unsub) console.warn('uhh, already subscribed to a match??')
         this.unsub = this.db.collection(Schemas.Collections.Tournaments.collectionName).doc(id)
         .onSnapshot(
@@ -81,12 +87,21 @@ class Network {
                 onTournamentUpdated(match)
             }
         )
+        this.unsub2 = this.db.collection(Schemas.Collections.User.collectionName).doc(playerId)
+        .onSnapshot(
+            (snap) => {
+                let pl = snap.data() as PlayerStats
+                onUpdatePlayer(pl)
+            }
+        )
     }
 
     unsubscribeTourney = (playerId:string) => {
         if(this.unsub){
             this.unsub()
             this.unsub = null
+            this.unsub2()
+            this.unsub2 = null
             this.leaveTournament(playerId)
         }
     }
@@ -96,13 +111,18 @@ class Network {
        return res.data
     }
 
-    tryJoinTournament = async (player:PlayerStats) => {
-       let res = await this.functions.httpsCallable(CloudFunctions.onTryPlayerJoin)({player})
+    tryJoinTournament = async (params:PlayerStats) => {
+       let res = await this.functions.httpsCallable(CloudFunctions.onTryPlayerJoin)(params)
        return res.data
     }
 
-    onSubmitBuild = async (player:PlayerStats) => {
-       let res = await this.functions.httpsCallable(CloudFunctions.onSubmitPlayerBuild)({player})
+    onSubmitBuild = async (params:PlayerStats) => {
+       let res = await this.functions.httpsCallable(CloudFunctions.onSubmitPlayerBuild)(params)
+       return res.data
+    }
+
+    onSubmitVotes = async (params:PlayerVoteParams) => {
+       let res = await this.functions.httpsCallable(CloudFunctions.onSubmitPlayerVote)(params)
        return res.data
     }
 

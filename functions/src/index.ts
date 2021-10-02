@@ -4,7 +4,7 @@ import { EventContext } from "firebase-functions";
 import { CallableContext } from "firebase-functions/v1/https";
 import {Schemas} from '../../firebase/Schemas'
 import { v4 } from "uuid";
-import { Abilities } from "../../enum";
+import { Abilities, Edict } from "../../enum";
 
 admin.initializeApp()
 
@@ -33,8 +33,8 @@ const resolveCurrentBrackets = async (context:EventContext) => {
                 ...tourney, 
                 hasEnded: true
             })
-            let votedModifier = getHighestEdict(tourney.votes)
-            await admin.firestore().collection(Schemas.Collections.Edicts.collectionName).doc(votedModifier.type).set(votedModifier)
+            let votedModifier = await getHighestEdict()
+            await admin.firestore().collection(Schemas.Collections.Edicts.collectionName).doc(votedModifier).set({active: true})
         }
         else {
             //else advance to next
@@ -69,13 +69,13 @@ const resolveBrackets = (brackets:Array<Bracket>) => {
     return brackets
 }
 
-const tryPlayerJoin = async (params:{player:PlayerStats}, ctx:CallableContext) => {
+const tryPlayerJoin = async (params:PlayerStats, ctx:CallableContext) => {
     //see if the tournament is active. If so, do nothing. If not, add player to next available bracket (or generate a new bracket), using employer and uid.
     let tourney = await getTournament()
     if(tourney.hasStarted) return false
     else {
         const newPlayer:PlayerStats = {
-            ...params.player,
+            ...params,
             wins: [],
             build: [],
             tournamentId: tourney.id
@@ -110,11 +110,11 @@ const playerLeft = async (params:{playerId:string}, ctx:CallableContext) => {
     }
 }
 
-const submitPlayerBuild = async (params:{player:PlayerStats}, ctx:CallableContext) => {
+const submitPlayerBuild = async (params:PlayerStats, ctx:CallableContext) => {
     //replace the player's current build using ability ids only
     let player = await getPlayer(ctx.auth?.uid)
     if(player){
-        player.build = params.player.build.map(b=>Abilities[b.type])
+        player.build = params.build.map(b=>Abilities[b.type])
         await updatePlayer(player)
     }
 }
@@ -125,6 +125,14 @@ const submitPlayerWager = async (params:Wager, ctx:CallableContext) => {
     if(player){
         player.wagers = player.wagers.filter(w=>w.bracketId !== params.bracketId)
         player.wagers.push(params)
+        await updatePlayer(player)
+    }
+}
+
+const submitPlayerVote = async (params:PlayerVoteParams, ctx:CallableContext) => {
+    let player = await getPlayer(ctx.auth?.uid)
+    if(player){
+        player.pendingVote=params.edict
         await updatePlayer(player)
     }
 }
@@ -164,9 +172,38 @@ const getNewTournament = ():Tournament => {
         hasStarted:false,
         hasEnded:false,
         lastCheck: Date.now(),
-        isVoting: false,
-        votes: []
+        isVoting: false
     }
+}
+
+interface VotesHash {
+    [thing:string]:number
+}
+
+const getHighestEdict = async () => {
+
+    let playersRef = await admin.firestore().collection(Schemas.Collections.User.collectionName).get()
+    const players = playersRef.docs.map(d=>d.data() as PlayerStats)
+
+    let voteHash = {} as VotesHash
+    players.forEach(p=>{
+        if(!voteHash[p.pendingVote]) voteHash[p.pendingVote] = 0
+        else voteHash[p.pendingVote]+=p.votes
+    })
+    let leaderVotes = 0
+    let leaderEdict = ''
+    for(let edict in voteHash){
+        if(voteHash[edict] > leaderVotes){
+            leaderVotes = voteHash[edict]
+            leaderEdict = edict
+        }
+    }
+
+    for(let player of players){
+        admin.firestore().collection(Schemas.Collections.User.collectionName).doc(player.uid).set({...player, votes: 0, pendingVote: null })
+    }
+
+    return leaderEdict as Edict
 }
 
 export const onResolveCurrentBrackets = functions.pubsub.schedule('0/10 * * * *').onRun(resolveCurrentBrackets)
@@ -174,3 +211,4 @@ export const onTryPlayerJoin = functions.https.onCall(tryPlayerJoin)
 export const onPlayerLeave = functions.https.onCall(playerLeft)
 export const onSubmitPlayerBuild= functions.https.onCall(submitPlayerBuild)
 export const onSubmitPlayerWager= functions.https.onCall(submitPlayerWager)
+export const onSubmitPlayerVote= functions.https.onCall(submitPlayerVote)

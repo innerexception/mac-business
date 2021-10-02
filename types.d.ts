@@ -7,13 +7,11 @@ interface Tournament {
     hasEnded:boolean
     lastCheck:number
     isVoting:boolean
-    votes: Array<EdictVote>
 }
 
-interface EdictVote {
-    playerId:string
-    votes: number
-    edictId:string
+interface EdictData {
+    name:import('./enum').Edict
+    description:string
 }
 
 interface Bracket {
@@ -50,7 +48,13 @@ interface PlayerStats {
     build: Array<AbilityData>
     wagers: Array<Wager>
     votes: number
+    pendingVote: import('./enum').Edict
     tournamentId: string
+}
+
+interface PlayerVoteParams {
+    playerId:string
+    edict: import('./enum').Edict
 }
 
 interface Wager {

@@ -15,7 +15,7 @@ interface Props {
 }
 
 interface State {
-    build:Array<Ability>
+    build:Array<AbilityData>
 }
 
 @(connect((state: RState) => ({
