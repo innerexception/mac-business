@@ -143,6 +143,7 @@ const resolveBrackets = (brackets:Array<Bracket>, players:Array<PlayerStats>, ne
     let remainingPlayers = brackets.map(b=>{
         if(b.player1) return b.player1
         if(b.player2) return b.player2
+        return
     }).filter(p=>p ? true: false)
 
     if(remainingPlayers.length === 1) return brackets

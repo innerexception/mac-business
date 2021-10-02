@@ -1,7 +1,6 @@
 interface Tournament {
     id:string
     activeRound: number
-    finalRound: number
     brackets: Array<Bracket>
     hasStarted:boolean
     hasEnded:boolean
@@ -17,6 +16,7 @@ interface EdictData {
 interface Bracket {
     uid:string
     round: number
+    odds: number
     player1?: PlayerStats
     player2?: PlayerStats
 }

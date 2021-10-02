@@ -42,12 +42,12 @@ export default class ViewscreenFrame extends React.Component<Props> {
                     {this.props.tournament.isVoting && <div style={{position:'absolute', top:0, left:0}}><Voting/></div>}
                     {!this.props.me.tournamentId && !this.props.tournament.hasStarted && Button(true, ()=>onShowModal(Modal.CHOOSE_EMPLOYMENT), 'Join Tournament')}
                     <div style={{display:'flex'}}>
-                        {new Array(tourney.finalRound).fill({}).map((b,i)=>
+                        {new Array(tourney.activeRound).fill({}).map((b,i)=>
                         <div style={{width:'100px', textAlign:'center'}}>Round {i}</div>
                         )}
                     </div>
                     <div style={{overflow:'auto', height:'55vh'}}>
-                        {new Array(tourney.finalRound).fill({}).map((b,i)=>
+                        {new Array(tourney.activeRound).fill({}).map((b,i)=>
                         <div style={{width:'100px'}}><BracketView round={i}/></div>
                         )}
                     </div>

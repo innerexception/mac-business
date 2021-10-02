@@ -45,7 +45,8 @@ export default class BuildEdit extends React.PureComponent<Props, State> {
         this.setState({build: this.state.build})
     }
     addNew = (abil:AbilityData) => {
-        //TODO
+        this.state.build.push(abil)
+        this.setState({build: this.state.build})
     }
 
     render(){
