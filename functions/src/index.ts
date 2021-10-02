@@ -4,7 +4,7 @@ import { EventContext } from "firebase-functions";
 import { CallableContext } from "firebase-functions/v1/https";
 import {Schemas} from '../../firebase/Schemas'
 import { v4 } from "uuid";
-import { Abilities, Edict } from "../../enum";
+import { Abilities, Edict, SpecialEffect } from "../../enum";
 
 admin.initializeApp()
 
@@ -96,6 +96,10 @@ const resolveBrackets = (brackets:Array<Bracket>) => {
         //TODO: 5. generate new brackets
     })
     return brackets
+}
+
+const resolveSpecial = (effect:SpecialEffect, attacker:PlayerStats, defender:PlayerStats) => {
+    //TODO
 }
 
 const tryPlayerJoin = async (params:PlayerStats, ctx:CallableContext) => {

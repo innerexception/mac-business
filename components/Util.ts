@@ -29,7 +29,10 @@ export const getNewPlayer = (name:string, uid:string):PlayerStats => {
         tournamentId: null,
         wagers: [],
         votes: 0,
-        pendingVote: null
+        pendingVote: null,
+        capital: 0,
+        morale: 0,
+        soul: 0
     }
 }
 

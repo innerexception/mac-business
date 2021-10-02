@@ -44,6 +44,9 @@ export default class BuildEdit extends React.PureComponent<Props, State> {
         this.state.build.splice(index, 1)
         this.setState({build: this.state.build})
     }
+    addNew = (abil:AbilityData) => {
+        //TODO
+    }
 
     render(){
         const build = this.props.me.build
@@ -65,7 +68,11 @@ export default class BuildEdit extends React.PureComponent<Props, State> {
                 </div>
                 <div>
                     {abils.map(a=>
-                        
+                        <div>
+                            <h5>{a.name}</h5>
+                            <h6>{a.description}</h6>
+                            {Button(true, ()=>this.addNew(a), '+')}
+                        </div>
                     )}
                 </div>
                 {Button(true, ()=>Provider.onSubmitBuild({...this.props.me, build: this.state.build}), 'Lock In')}
