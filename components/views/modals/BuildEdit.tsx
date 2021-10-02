@@ -4,7 +4,7 @@ import { Button, TopBar } from '../../Shared';
 import { onJoinMatch, onHideModal, onUpdatePlayer, onShowModal } from '../../uiManager/Thunks';
 import { connect } from 'react-redux';
 import Dialog from '../Dialog';
-import { Avatars, Modal } from '../../../enum';
+import { Abilities, Ability, Modal } from '../../../enum';
 import Tooltip from 'rc-tooltip'
 import PlayerHistory, { AbilityTooltip } from '../PlayerHistory';
 import Provider from '../../../firebase/Network';
@@ -47,19 +47,27 @@ export default class BuildEdit extends React.PureComponent<Props, State> {
 
     render(){
         const build = this.props.me.build
+        const abils = Object.keys(Abilities).filter((a:Ability)=>Abilities[a].corp === this.props.me.employer).map((a:Ability)=>Abilities[a])
         return (
             <div>
-                {build.map((b,i)=>
-                    <Tooltip overlay={<AbilityTooltip ability={b}/>} placement="bottom">
-                        <div style={{display:'flex'}}>
-                            <h5>{i+1}</h5>
-                            <h5>{b.name}</h5>
-                            {Button(i > 0, ()=>this.onMoveUp(i), 'up')}
-                            {Button(i < this.props.me.build.length, ()=>this.onMoveDown(i), 'down')}
-                            {Button(true, ()=>this.onRemove(i), 'x')}
-                        </div>
-                    </Tooltip>
-                )}
+                <div>
+                    {build.map((b,i)=>
+                        <Tooltip overlay={<AbilityTooltip ability={b}/>} placement="bottom">
+                            <div style={{display:'flex'}}>
+                                <h5>{i+1}</h5>
+                                <h5>{b.name}</h5>
+                                {Button(i > 0, ()=>this.onMoveUp(i), 'up')}
+                                {Button(i < this.props.me.build.length, ()=>this.onMoveDown(i), 'down')}
+                                {Button(true, ()=>this.onRemove(i), 'x')}
+                            </div>
+                        </Tooltip>
+                    )}
+                </div>
+                <div>
+                    {abils.map(a=>
+                        
+                    )}
+                </div>
                 {Button(true, ()=>Provider.onSubmitBuild({...this.props.me, build: this.state.build}), 'Lock In')}
             </div>
         )

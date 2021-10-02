@@ -1,8 +1,7 @@
 import * as React from 'react'
 import { Button, TopBar } from '../../Shared';
 import Provider from '../../../firebase/Network';
-import { Corporations, Corporation, Edict, Edicts } from '../../../enum';
-import { onHideModal } from '../../uiManager/Thunks';
+import { Edict, Edicts } from '../../../enum';
 import { connect } from 'react-redux';
 
 interface Props {

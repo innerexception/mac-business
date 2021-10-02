@@ -23,17 +23,17 @@ Bracketed Strategic Global Auto-battler
             -Branded content (-1 soul, +1 capital, -1/+1 per follower)
 
         -Red (Chaotic Evil, Uvhash, Rontheon Arma)
-            Morale damage only. Gains capital from dealing Morale damage.
-            Passive: Gain 1 capital for each Morale damage dealt while you have 0 soul
-            -Drone strike (-2 soul, 2 Morale damage)
-            -Both sides (-2 soul, 2 Morale damage, +2 capital if opponent has more than 4 soul)
-            -War on Terror (+3 capital, 3 Morale damage if you have more than 5 capital)
-            -Information Warfare (+1 morale, 1 Morale damage if opponent has more than 5 soul)
+            Soul damage only. Gains capital from dealing soul damage.
+            Passive: Gain 1 capital for each soul damage dealt while you have 0 soul
+            -Drone strike (-2 soul, 2 soul damage)
+            -Both sides (-2 soul, 2 soul damage, +2 capital if opponent has more than 4 soul)
+            -War on Terror (+3 capital, 3 soul damage if you have more than 5 capital)
+            -Information Warfare (+1 morale, 1 soul damage if opponent has more than 5 soul)
             -Teleportation Fields (-3 soul, +1 capital and take another action)
             -Demonic Army (Chance on using Teleportation fields, will randomly spawn an imp in your bracket which attacks players at random)
             
         -Green (Lawful Neutral, C'thalpa, Hells Fargo Bank)
-            Capital focus
+            Capital gains focus
             Passive: On action, gain additional 1 capital if your opponent has less than 3 capital
             -Currency Manipulation (-3 Soul, +3 capital)
             -ARM Loans (+1 capital)
@@ -51,7 +51,7 @@ Bracketed Strategic Global Auto-battler
             -Private army (-1 morale, steal 1 soul)
 
         -Blue (Neutral Evil, Nyarlathotep, Elysium Medical Group)
-            Soul damage focus. 
+            Capital damage focus. 
             Passive: Deal 1 soul damage to enemy when they use an ability that costs more than 1 soul
             -Organ repo teams (2 soul, -2 morale, +1 capital)
             -Licensing Guild (1 soul, +1 capital for )

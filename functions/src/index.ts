@@ -59,12 +59,41 @@ const resolveCurrentBrackets = async (context:EventContext) => {
 }
 
 const resolveBrackets = (brackets:Array<Bracket>) => {
-    //TODO: resolve each bracket, 
-    // pay out wagers, 
-    // generate the next round of brackets, 
-    // update player win histories
     brackets.forEach(b=>{
-        
+        //1. Resolve each bracket
+        //TODO: Apply edicts as appropriate
+        let p1 = b.player1 as PlayerStats
+        let p2 = b.player2 as PlayerStats
+        p1?.build.forEach(a=>{
+            p1.capital -= a.capitalCost
+            p1.morale -= a.moraleCost
+            p1.soul -= a.soulCost
+            p2.capital -= a.capitalDmg
+            p2.morale -= a.moraleDmg
+            p2.soul -= a.soulDmg
+            if(a.special) resolveSpecial(a.special, p1, p2)
+        })
+        p2?.build.forEach(a=>{
+            p2.capital -= a.capitalCost
+            p2.morale -= a.moraleCost
+            p2.soul -= a.soulCost
+            p1.capital -= a.capitalDmg
+            p1.morale -= a.moraleDmg
+            p1.soul -= a.soulDmg
+            if(a.special) resolveSpecial(a.special, p2, p1)
+        })
+        if(p1.morale > 0 && p2.morale > 0){
+            //Resolve builds again
+
+        }
+        else {
+            //Somebody is at 0 morale (could both be eliminated)
+
+        }
+        //TODO: 2. Check for devouring
+        //TODO: 3. Update player win history
+        //TODO: 4. Pay out wagers (don't get paid if devoured)
+        //TODO: 5. generate new brackets
     })
     return brackets
 }
@@ -78,7 +107,10 @@ const tryPlayerJoin = async (params:PlayerStats, ctx:CallableContext) => {
             ...params,
             wins: [],
             build: [],
-            tournamentId: tourney.id
+            tournamentId: tourney.id,
+            soul:10, //TODO: varies by corpo
+            morale:10,
+            capital:0
         }
         const availableBracket = tourney.brackets.find(b=>!b.player2 || !b.player1)
         if(availableBracket){

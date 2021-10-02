@@ -50,6 +50,9 @@ interface PlayerStats {
     votes: number
     pendingVote: import('./enum').Edict
     tournamentId: string
+    capital:number
+    morale:number
+    soul:number
 }
 
 interface PlayerVoteParams {

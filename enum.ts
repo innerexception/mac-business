@@ -36,18 +36,6 @@ export const Edicts:Record<Edict, EdictData> = {
     }
 }
 
-export enum Ability {
-
-}
-
-export const Abilities:Record<Ability, AbilityData> = {
-
-}
-
-export enum SpecialEffect {
-    
-}
-
 export enum Corporation {
     Wernstern='Wernstern Media',
     Rontheon='Rontheon Arma',
@@ -55,6 +43,30 @@ export enum Corporation {
     McKillsie='McKillsie Consulting',
     Elysium='Elysium Medical Group',
     PardonPharma='PardonPharma'
+}
+
+export enum SpecialEffect {
+    Follower
+}
+
+export enum Ability {
+    Tweet='Tweet'
+}
+
+export const Abilities:Record<Ability, AbilityData> = {
+    [Ability.Tweet]: {
+        type: Ability.Tweet,
+        name: 'Tweet',
+        description: '',
+        corp: Corporation.Wernstern,
+        special: SpecialEffect.Follower,
+        moraleCost: 0,
+        moraleDmg: 1,
+        soulCost: 0,
+        soulDmg: 0,
+        capitalCost: 0,
+        capitalDmg: 0
+    }
 }
 
 export const Corporations:Record<Corporation, CorpoData> = {
