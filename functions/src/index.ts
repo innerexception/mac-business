@@ -10,9 +10,10 @@ admin.initializeApp()
 
 const resolveCurrentBrackets = async (context:EventContext) => {
     let tourney = await getTournament()
-    if(!tourney || tourney.hasEnded){
-        await updateTournament(getNewTournament())
-        tourney = await getTournament()
+    if(tourney.hasEnded){
+        const newTourney = getNewTournament()
+        await updateTournament(newTourney)
+        tourney = newTourney
     }
 
     if(tourney.hasStarted){
@@ -117,8 +118,13 @@ const submitPlayerWager = async (params:Wager, ctx:CallableContext) => {
 }
 
 const getTournament = async () => {
-    let ref = await admin.firestore().collection(Schemas.Collections.Tournaments.collectionName).get()
-    return ref.docs[0].data() as Tournament
+    let ref = await admin.firestore().collection(Schemas.Collections.Tournaments.collectionName).doc('thing1').get()
+    if(!ref.exists){
+        const newTourney = getNewTournament()
+        await updateTournament(newTourney)
+        return newTourney
+    } 
+    return ref.data() as Tournament
 }
 
 const updateTournament = async (tournament:Tournament) => {
