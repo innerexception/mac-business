@@ -17,8 +17,8 @@ export const Schemas = {
                 votes: 'votes'
             }
         },
-        Abilities: {
-            collectionName: 'mb-abilities',
+        Edicts: {
+            collectionName: 'mb-edicts',
             fields: {
                 id:'id',
                 data: 'data'

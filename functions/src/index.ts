@@ -20,12 +20,21 @@ const resolveCurrentBrackets = async (context:EventContext) => {
         //if there is an active tournament, calculate all brackets and advance/remove players
         const brackets = resolveBrackets(tourney.brackets)
         if(tourney.activeRound === tourney.finalRound){
-            //end it after resolving
+            //start voting on edicts
             await updateTournament({
                 ...tourney, 
-                hasEnded: true,
+                isVoting: true,
                 brackets
             })
+        }
+        else if(tourney.isVoting){
+            //end it and save voting result
+            await updateTournament({
+                ...tourney, 
+                hasEnded: true
+            })
+            let votedModifier = getHighestEdict(tourney.votes)
+            await admin.firestore().collection(Schemas.Collections.Edicts.collectionName).doc(votedModifier.type).set(votedModifier)
         }
         else {
             //else advance to next
@@ -50,7 +59,10 @@ const resolveCurrentBrackets = async (context:EventContext) => {
 }
 
 const resolveBrackets = (brackets:Array<Bracket>) => {
-    //TODO: resolve each bracket and pay out wagers
+    //TODO: resolve each bracket, 
+    // pay out wagers, 
+    // generate the next round of brackets, 
+    // update player win histories
     brackets.forEach(b=>{
         
     })
@@ -151,7 +163,9 @@ const getNewTournament = ():Tournament => {
         brackets: [],
         hasStarted:false,
         hasEnded:false,
-        lastCheck: Date.now()
+        lastCheck: Date.now(),
+        isVoting: false,
+        votes: []
     }
 }
 

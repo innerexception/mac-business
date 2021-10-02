@@ -6,6 +6,14 @@ interface Tournament {
     hasStarted:boolean
     hasEnded:boolean
     lastCheck:number
+    isVoting:boolean
+    votes: Array<EdictVote>
+}
+
+interface EdictVote {
+    playerId:string
+    votes: number
+    edictId:string
 }
 
 interface Bracket {
@@ -41,6 +49,7 @@ interface PlayerStats {
     wins: Array<BuildHistory>
     build: Array<AbilityData>
     wagers: Array<Wager>
+    votes: number
     tournamentId: string
 }
 
