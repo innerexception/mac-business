@@ -46,7 +46,7 @@ interface PlayerStats {
     name:string
     avatarIndex:number
     employer: import('./enum').Corporation
-    wins: Array<BuildHistory>
+    currentWins: Array<BuildHistory>
     build: Array<AbilityData>
     wagers: Array<Wager>
     votes: number
@@ -56,6 +56,7 @@ interface PlayerStats {
     morale:number
     soul:number
     followers: number
+    wins:number
 }
 
 interface PlayerVoteParams {
@@ -73,6 +74,9 @@ interface CorpoData {
     name:string
     color: string
     description:string
+    soul:number
+    morale:number
+    capital:number
 }
 
 interface ModalState { modal: import('./enum').Modal, data?: any }

@@ -76,32 +76,50 @@ export const Corporations:Record<Corporation, CorpoData> = {
     [Corporation.Elysium]: {
         color:'0x0000ff',
         description: "Leading innovations in extra dimensional health therapies. Join tomorrow's eternity today!",
-        name: 'Elysium Medical Group'
+        name: 'Elysium Medical Group',
+        morale: 10,
+        capital: 0,
+        soul: 10
     },
     [Corporation.HellBank]: {
         color:'0xff0000',
         name: "Hell's Fargo Financial",
-        description: 'Got cash? Not for long!'
+        description: 'Got cash? Not for long!',
+        morale: 10,
+        capital: -5,
+        soul: 10
     },
     [Corporation.McKillsie]: {
         color:'0xcccccc',
         description: 'McKillsie Consulting has a proven track record of turning successful firms into decomposing yet still living piles of organic matter.',
-        name: 'McKillsie Consulting' 
+        name: 'McKillsie Consulting',
+        morale: 10,
+        capital: 0,
+        soul: 10
     },
     [Corporation.PardonPharma]: {
         color:'0xff00ff',
         name: 'PardonPharma',
-        description: 'Like if El Chapo had lobbyists.'
+        description: 'Like if El Chapo had lobbyists.',
+        morale: 10,
+        capital: 0,
+        soul: 20
     },
     [Corporation.Rontheon]: {
         color:'0xff0000',
         name: 'Rontheon Defense',
-        description: 'A proven track record of turning successful countries and individuals into smoking heaps of gory ash.'
+        description: 'A proven track record of turning successful countries and individuals into smoking heaps of gory ash.',
+        morale: 10,
+        capital: 0,
+        soul: 10
     },
     [Corporation.Wernstern]: {
         color:'0x00ff00',
         name: 'Wernstern Media',
-        description: 'If you read it, we wrote it.'
+        description: 'If you read it, we wrote it.',
+        morale: 5,
+        capital: 0,
+        soul: 10
     },
 }
 

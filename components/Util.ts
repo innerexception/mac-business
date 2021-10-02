@@ -24,7 +24,7 @@ export const getNewPlayer = (name:string, uid:string):PlayerStats => {
         name,
         avatarIndex:between(0,Avatars.length-1),
         employer: null,
-        wins: [],
+        currentWins: [],
         build: [],
         tournamentId: null,
         wagers: [],
@@ -33,7 +33,8 @@ export const getNewPlayer = (name:string, uid:string):PlayerStats => {
         capital: 0,
         morale: 0,
         soul: 0,
-        followers:0
+        followers:0,
+        wins:0
     }
 }
 

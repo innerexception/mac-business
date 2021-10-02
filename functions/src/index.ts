@@ -4,7 +4,7 @@ import { EventContext } from "firebase-functions";
 import { CallableContext } from "firebase-functions/v1/https";
 import {Schemas} from '../../firebase/Schemas'
 import { v4 } from "uuid";
-import { Ability, Edict } from "../../enum";
+import { Ability, Corporations, Edict } from "../../enum";
 import { Abilities } from "./Abilities";
 
 admin.initializeApp()
@@ -84,7 +84,7 @@ const resolveBrackets = (brackets:Array<Bracket>, players:Array<PlayerStats>, ne
             }
             else if(p1.soul <= 0){
                 //3. Check for devouring
-                if(Math.random() > 0.1 + Math.abs(0.1*p1.soul)){
+                if(Math.random() <= 0.1 + Math.abs(0.1*p1.soul)){
                     messages.push({ text: p1.name+' was devoured!'})
                     delete b.player1
                 }
@@ -100,7 +100,7 @@ const resolveBrackets = (brackets:Array<Bracket>, players:Array<PlayerStats>, ne
             }
             else if(p2.soul <= 0){ 
                 //3. Check for devouring
-                if(Math.random() > 0.1 + Math.abs(0.1*p2.soul)){
+                if(Math.random() <= 0.1 + Math.abs(0.1*p2.soul)){
                     messages.push({ text: p2.name+' was devoured!'})
                     delete b.player2
                 }
@@ -114,16 +114,17 @@ const resolveBrackets = (brackets:Array<Bracket>, players:Array<PlayerStats>, ne
             //Now there should be only 1 player in each bracket. Update player win history
             if(b.player1){
                 winnerId = b.player1.uid
-                b.player1.wins.push({abilities: b.player1.build})
+                b.player1.currentWins.push({abilities: b.player1.build})
             }
             else if(b.player2){
                 winnerId = b.player2.uid
-                b.player2.wins.push({abilities: b.player2.build})
+                b.player2.currentWins.push({abilities: b.player2.build})
             }
 
             //Now Pay out winners of bracket
             if(winnerId){
                 players.forEach(p=>{
+                    if(p.uid === winnerId) p.wins++
                     const wager = p.wagers.find(w=>w.bracketId===b.uid && w.playerToWin === winnerId)
                     if(wager){
                         p.votes += (wager.amount * b.odds)
@@ -142,8 +143,8 @@ const resolveBrackets = (brackets:Array<Bracket>, players:Array<PlayerStats>, ne
     //Generate new brackets
     let nBrackets = new Array<Bracket>()
     let remainingPlayers = brackets.map(b=>{
-        if(b.player1) return b.player1
-        if(b.player2) return b.player2
+        if(b.player1) return resetPlayerResources(b.player1)
+        if(b.player2) return resetPlayerResources(b.player2)
         return
     }).filter(p=>p ? true: false)
 
@@ -162,6 +163,15 @@ const resolveBrackets = (brackets:Array<Bracket>, players:Array<PlayerStats>, ne
     //TODO: send messages
 
     return brackets.concat(nBrackets)
+}
+
+const resetPlayerResources = (pl:PlayerStats):PlayerStats => {
+    return {
+        ...pl,
+        soul: Corporations[pl.employer].soul,
+        morale: Corporations[pl.employer].morale,
+        capital: Corporations[pl.employer].capital
+    }
 }
 
 const resolveBracket = (p1:PlayerStats, p2:PlayerStats) => {
@@ -200,15 +210,13 @@ const tryPlayerJoin = async (params:PlayerStats, ctx:CallableContext) => {
     let tourney = await getTournament()
     if(tourney.hasStarted) return false
     else {
-        const newPlayer:PlayerStats = {
+        let newPlayer:PlayerStats = {
             ...params,
-            wins: [],
+            currentWins: [],
             build: [],
-            tournamentId: tourney.id,
-            soul:10, //TODO: varies by corpo
-            morale:10,
-            capital:0
+            tournamentId: tourney.id
         }
+        newPlayer = resetPlayerResources(newPlayer)
         const availableBracket = tourney.brackets.find(b=>!b.player2 || !b.player1)
         if(availableBracket){
             if(!availableBracket.player1) availableBracket.player1 = newPlayer
