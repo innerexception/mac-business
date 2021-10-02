@@ -26,8 +26,8 @@ export default class BracketView extends React.PureComponent<Props> {
             <div>
                 {brackets.map(b=>
                 <div>
-                    <Bracket playerId={b.player1} myId={this.props.me.uid}/>
-                    <Bracket playerId={b.player2} myId={this.props.me.uid}/>
+                    <Bracket playerId={b.player1Id} myId={this.props.me.uid}/>
+                    <Bracket playerId={b.player2Id} myId={this.props.me.uid}/>
                 </div>
                 )}
             </div>

@@ -17,8 +17,8 @@ interface Bracket {
     uid:string
     round: number
     odds: number
-    player1?: string
-    player2?: string
+    player1Id?: string
+    player2Id?: string
 }
 
 interface AbilityData {

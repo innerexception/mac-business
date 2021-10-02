@@ -68,8 +68,8 @@ const resolveBrackets = (brackets:Array<Bracket>, players:Array<PlayerStats>, ne
     brackets.forEach(b=>{
         //1. Resolve each bracket
         //TODO: Apply edicts as appropriate
-        let p1 = players.find(p=>p.uid === b.player1)
-        let p2 = players.find(p=>p.uid === b.player2)
+        let p1 = players.find(p=>p.uid === b.player1Id)
+        let p2 = players.find(p=>p.uid === b.player2Id)
         if(p1 && p2){
             while(p1.morale > 0 && p2.morale > 0 && p1.capital < 10 && p2.capital < 10){
                 //Resolve builds
@@ -80,13 +80,13 @@ const resolveBrackets = (brackets:Array<Bracket>, players:Array<PlayerStats>, ne
             //Player 1
             if(p1.morale<=0 ){
                 messages.push({ text: p1.name+' was driven insane by '+p2.name})
-                delete b.player1
+                delete b.player1Id
             }
             else if(p1.soul <= 0){
                 //3. Check for devouring
                 if(Math.random() <= 0.1 + Math.abs(0.1*p1.soul)){
                     messages.push({ text: p1.name+' was devoured!'})
-                    delete b.player1
+                    delete b.player1Id
                 }
             }
             else if(p1.capital >= 10 && p1.capital > p2.capital){
@@ -96,13 +96,13 @@ const resolveBrackets = (brackets:Array<Bracket>, players:Array<PlayerStats>, ne
             //Player 2
             if(p2.morale<=0){
                 messages.push({ text: p2.name+' was driven insane by '+p1.name})
-                delete b.player2
+                delete b.player2Id
             }
             else if(p2.soul <= 0){ 
                 //3. Check for devouring
                 if(Math.random() <= 0.1 + Math.abs(0.1*p2.soul)){
                     messages.push({ text: p2.name+' was devoured!'})
-                    delete b.player2
+                    delete b.player2Id
                 }
             }
             else if(p2.capital >= 10 && p2.capital > p1.capital){
@@ -112,12 +112,12 @@ const resolveBrackets = (brackets:Array<Bracket>, players:Array<PlayerStats>, ne
             let winnerId=''
 
             //Now there should be only 1 player in each bracket. Update player win history
-            if(b.player1){
-                winnerId = b.player1
+            if(b.player1Id){
+                winnerId = b.player1Id
                 p1.currentWins.push({abilities: p1.build})
             }
-            else if(b.player2){
-                winnerId = b.player2
+            else if(b.player2Id){
+                winnerId = b.player2Id
                 p2.currentWins.push({abilities: p2.build})
             }
 
@@ -143,8 +143,8 @@ const resolveBrackets = (brackets:Array<Bracket>, players:Array<PlayerStats>, ne
     //Generate new brackets
     let nBrackets = new Array<Bracket>()
     let remainingPlayers = brackets.map(b=>{
-        if(b.player1) return b.player1
-        if(b.player2) return b.player2
+        if(b.player1Id) return b.player1Id
+        if(b.player2Id) return b.player2Id
         return
     }).filter(p=>p ? true: false)
 
@@ -155,8 +155,8 @@ const resolveBrackets = (brackets:Array<Bracket>, players:Array<PlayerStats>, ne
             uid: v4(),
             round: nextRound,
             odds: 1, //TODO: varies by player win ratio difference
-            player1: remainingPlayers[i],
-            player2: remainingPlayers[i+1]
+            player1Id: remainingPlayers[i],
+            player2Id: remainingPlayers[i+1]
         })
     }
 
@@ -218,17 +218,17 @@ const tryPlayerJoin = async (params:PlayerStats, ctx:CallableContext) => {
         }
         newPlayer = resetPlayerResources(newPlayer)
         await updatePlayer(newPlayer)
-        const availableBracket = tourney.brackets.find(b=>!b.player2 || !b.player1)
+        const availableBracket = tourney.brackets.find(b=>!b.player2Id || !b.player1Id)
         if(availableBracket){
-            if(!availableBracket.player1) availableBracket.player1 = newPlayer.uid
-            else availableBracket.player2 = newPlayer.uid
+            if(!availableBracket.player1Id) availableBracket.player1Id = newPlayer.uid
+            else availableBracket.player2Id = newPlayer.uid
         }
         else {
             tourney.brackets.push({
                 uid: v4(),
                 round: 0,
                 odds: 1, //TODO: varies by player win ratio difference
-                player1: newPlayer.uid
+                player1Id: newPlayer.uid
             })
         }
         await updateTournament(tourney)
@@ -241,10 +241,10 @@ const playerLeft = async (params:{playerId:string}, ctx:CallableContext) => {
     let tourney = await getTournament()
     if(!tourney.hasStarted){
         tourney.brackets.forEach(b=>{
-            if(b.player1 === params.playerId) delete b.player1
-            if(b.player2 === params.playerId) delete b.player2
+            if(b.player1Id === params.playerId) delete b.player1Id
+            if(b.player2Id === params.playerId) delete b.player2Id
         })
-        tourney.brackets = tourney.brackets.filter(b=>b.player1 || b.player2)
+        tourney.brackets = tourney.brackets.filter(b=>b.player1Id || b.player2Id)
         await updateTournament(tourney)
     }
 }
