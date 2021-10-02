@@ -18,8 +18,10 @@ const resolveCurrentBrackets = async (context:EventContext) => {
 
     if(tourney.hasStarted){
         //if there is an active tournament, calculate all brackets and advance/remove players
-        const brackets = resolveBrackets(tourney.brackets)
-        if(tourney.activeRound === tourney.finalRound){
+        const players = await getPlayers()
+        const brackets = resolveBrackets(tourney.brackets, players, tourney.activeRound+1)
+        const roundBrackets = brackets.filter(b=>b.round === tourney.activeRound+1)
+        if(roundBrackets.length === 0){
             //start voting on edicts
             await updateTournament({
                 ...tourney, 
@@ -58,44 +60,127 @@ const resolveCurrentBrackets = async (context:EventContext) => {
     }
 }
 
-const resolveBrackets = (brackets:Array<Bracket>) => {
+const resolveBrackets = (brackets:Array<Bracket>, players:Array<PlayerStats>, nextRound:number) => {
+
+    let messages = []
+
     brackets.forEach(b=>{
         //1. Resolve each bracket
         //TODO: Apply edicts as appropriate
         let p1 = b.player1 as PlayerStats
         let p2 = b.player2 as PlayerStats
-        p1?.build.forEach(a=>{
-            p1.capital -= a.capitalCost
-            p1.morale -= a.moraleCost
-            p1.soul -= a.soulCost
-            p2.capital -= a.capitalDmg
-            p2.morale -= a.moraleDmg
-            p2.soul -= a.soulDmg
-            if(a.special) resolveSpecial(a.special, p1, p2)
-        })
-        p2?.build.forEach(a=>{
-            p2.capital -= a.capitalCost
-            p2.morale -= a.moraleCost
-            p2.soul -= a.soulCost
-            p1.capital -= a.capitalDmg
-            p1.morale -= a.moraleDmg
-            p1.soul -= a.soulDmg
-            if(a.special) resolveSpecial(a.special, p2, p1)
-        })
-        if(p1.morale > 0 && p2.morale > 0){
-            //Resolve builds again
+        if(p1 && p2){
+            while(p1.morale > 0 && p2.morale > 0 && p1.capital < 10 && p2.capital < 10){
+                //Resolve builds
+                resolveBracket(p1,p2)
+            }
 
-        }
-        else {
-            //Somebody is at 0 morale (could both be eliminated)
+            //Now Somebody is at 0 morale or 10 cap (could both be eliminated) in this bracket
+            //Player 1
+            if(p1.morale<=0 ){
+                messages.push({ text: p1.name+' was driven insane by '+p2.name})
+                delete b.player1
+            }
+            else if(p1.soul <= 0){
+                //3. Check for devouring
+                if(Math.random() > 0.1 + Math.abs(0.1*p1.soul)){
+                    messages.push({ text: p1.name+' was devoured!'})
+                    delete b.player1
+                }
+            }
+            else if(p1.capital >= 10 && p1.capital > p2.capital){
+                messages.push({ text: p1.name+' bought out '+p2.name})
+            }
 
+            //Player 2
+            if(p2.morale<=0){
+                messages.push({ text: p2.name+' was driven insane by '+p1.name})
+                delete b.player2
+            }
+            else if(p2.soul <= 0){ 
+                //3. Check for devouring
+                if(Math.random() > 0.1 + Math.abs(0.1*p2.soul)){
+                    messages.push({ text: p2.name+' was devoured!'})
+                    delete b.player2
+                }
+            }
+            else if(p2.capital >= 10 && p2.capital > p1.capital){
+                messages.push({ text: p2.name+' bought out '+p1.name})
+            }
+
+            let winnerId=''
+
+            //Now there should be only 1 player in each bracket. Update player win history
+            if(b.player1){
+                winnerId = b.player1.uid
+                b.player1.wins.push({abilities: b.player1.build})
+            }
+            else if(b.player2){
+                winnerId = b.player2.uid
+                b.player2.wins.push({abilities: b.player2.build})
+            }
+
+            //Now Pay out winners of bracket
+            if(winnerId){
+                players.forEach(p=>{
+                    const wager = p.wagers.find(w=>w.bracketId===b.uid && w.playerToWin === winnerId)
+                    if(wager){
+                        p.votes += (wager.amount * b.odds)
+                        p.wagers = p.wagers.filter(w=>w.bracketId !== b.uid)
+                    }
+                })
+            }
         }
-        //TODO: 2. Check for devouring
-        //TODO: 3. Update player win history
-        //TODO: 4. Pay out wagers (don't get paid if devoured)
-        //TODO: 5. generate new brackets
     })
-    return brackets
+
+    //Save updated player info
+    for(let player of players){
+        admin.firestore().collection(Schemas.Collections.User.collectionName).doc(player.uid).set(player)
+    }
+
+    //Generate new brackets
+    let nBrackets = new Array<Bracket>()
+    let remainingPlayers = brackets.map(b=>{
+        if(b.player1) return b.player1
+        if(b.player2) return b.player2
+    }).filter(p=>p ? true: false)
+
+    if(remainingPlayers.length === 1) return brackets
+
+    for(let i=0; i < remainingPlayers.length; i+=2){
+        nBrackets.push({
+            uid: v4(),
+            round: nextRound,
+            odds: 1, //TODO: varies by player win ratio difference
+            player1: remainingPlayers[i],
+            player2: remainingPlayers[i+1]
+        })
+    }
+
+    //TODO: send messages
+
+    return brackets.concat(nBrackets)
+}
+
+const resolveBracket = (p1:PlayerStats, p2:PlayerStats) => {
+    p1.build.forEach(a=>{
+        p1.capital -= a.capitalCost
+        p1.morale -= a.moraleCost
+        p1.soul -= a.soulCost
+        p2.capital -= a.capitalDmg
+        p2.morale -= a.moraleDmg
+        p2.soul -= a.soulDmg
+        if(a.special) resolveSpecial(a.special, p1, p2)
+    })
+    p2.build.forEach(a=>{
+        p2.capital -= a.capitalCost
+        p2.morale -= a.moraleCost
+        p2.soul -= a.soulCost
+        p1.capital -= a.capitalDmg
+        p1.morale -= a.moraleDmg
+        p1.soul -= a.soulDmg
+        if(a.special) resolveSpecial(a.special, p2, p1)
+    })
 }
 
 const resolveSpecial = (effect:SpecialEffect, attacker:PlayerStats, defender:PlayerStats) => {
@@ -125,6 +210,7 @@ const tryPlayerJoin = async (params:PlayerStats, ctx:CallableContext) => {
             tourney.brackets.push({
                 uid: v4(),
                 round: 0,
+                odds: 1, //TODO: varies by player win ratio difference
                 player1: newPlayer
             })
         }
@@ -195,6 +281,11 @@ const getPlayer = async (playerId?:string) => {
     return undefined
 }
 
+const getPlayers = async () => {
+    let ref = await admin.firestore().collection(Schemas.Collections.User.collectionName).get()
+    return ref.docs.map(d=>d.data() as PlayerStats)
+}
+
 const updatePlayer = async (player:PlayerStats) => {
     await admin.firestore().collection(Schemas.Collections.User.collectionName).doc(player.uid).set(player)
 }
@@ -203,7 +294,6 @@ const getNewTournament = ():Tournament => {
     return {
         id:v4(),
         activeRound: 0,
-        finalRound: 0,
         brackets: [],
         hasStarted:false,
         hasEnded:false,
