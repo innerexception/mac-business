@@ -30,5 +30,4 @@ export const AbilityTooltip = ({ability}:TipProps) =>
         <h6>Capital: {ability.capitalCost|| '-'} / {ability.capitalDmg|| '-'}</h6>
         <h6>Morale: {ability.moraleCost|| '-'} / {ability.moraleDmg|| '-'}</h6>
         <h6>Soul: {ability.soulCost || '-'} / {ability.soulDmg || '-'}</h6>
-        {ability.special && <h6>Special: {ability.special}</h6>}
     </div>

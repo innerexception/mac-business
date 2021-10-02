@@ -26,7 +26,7 @@ export enum CloudFunctions {
 }
 
 export enum Edict {
-    SoulDeficit='SoulDeficit'
+    SoulDeficit='Soul Deficit'
 }
 
 export const Edicts:Record<Edict, EdictData> = {
@@ -45,28 +45,31 @@ export enum Corporation {
     PardonPharma='PardonPharma'
 }
 
-export enum SpecialEffect {
-    Follower
-}
-
 export enum Ability {
-    Tweet='Tweet'
-}
-
-export const Abilities:Record<Ability, AbilityData> = {
-    [Ability.Tweet]: {
-        type: Ability.Tweet,
-        name: 'Tweet',
-        description: '',
-        corp: Corporation.Wernstern,
-        special: SpecialEffect.Follower,
-        moraleCost: 0,
-        moraleDmg: 1,
-        soulCost: 0,
-        soulDmg: 0,
-        capitalCost: 0,
-        capitalDmg: 0
-    }
+    Tweet='Cursed Tweet',
+    Mouthpiece='Mouthpiece of Chaos',
+    OnlyFams='OnlyFams',
+    TrollArmy='Troll Army',
+    BrandedContent='Branded Content',
+    Drone='Drone Strike',
+    BothSides='Both sides',
+    WarForTerror='War for Terror',
+    InformationWarfare='Information Warfare',
+    TeleportationFields='Teleportation Fields',
+    CurrencyManipulation='Currency Manipulation',
+    ARMLoans='ARM Loans',
+    RepoArmy='Repo Army',
+    CapitalGains='Capital Gains',
+    LineGoUp='Line Go Up',
+    MammonDevice='Mammon Device',
+    NGOFunding='NGO Funding',
+    GrowthPlan='Growth Plan',
+    AusterityMeasures='Austerity Measures',
+    MercenaryArmy='Mercenary Army',
+    OxyCalm='OxyCalm',
+    PowerThirst='PowerThirst',
+    InfinitePatents='Infinite Patents',
+    DickPill='DickPill'
 }
 
 export const Corporations:Record<Corporation, CorpoData> = {

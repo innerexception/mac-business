@@ -4,7 +4,8 @@ import { EventContext } from "firebase-functions";
 import { CallableContext } from "firebase-functions/v1/https";
 import {Schemas} from '../../firebase/Schemas'
 import { v4 } from "uuid";
-import { Abilities, Edict, SpecialEffect } from "../../enum";
+import { Ability, Edict } from "../../enum";
+import { Abilities } from "./Abilities";
 
 admin.initializeApp()
 
@@ -166,25 +167,31 @@ const resolveBrackets = (brackets:Array<Bracket>, players:Array<PlayerStats>, ne
 const resolveBracket = (p1:PlayerStats, p2:PlayerStats) => {
     p1.build.forEach(a=>{
         p1.capital -= a.capitalCost
+        p1.capital += a.capitalGain
         p1.morale -= a.moraleCost
+        p1.morale += a.moraleGain
         p1.soul -= a.soulCost
+        p1.soul += a.soulGain
         p2.capital -= a.capitalDmg
         p2.morale -= a.moraleDmg
         p2.soul -= a.soulDmg
-        if(a.special) resolveSpecial(a.special, p1, p2)
+        resolveSpecial(a.type, p1, p2)
     })
     p2.build.forEach(a=>{
         p2.capital -= a.capitalCost
+        p2.capital += a.capitalGain
         p2.morale -= a.moraleCost
+        p2.morale += a.moraleGain
         p2.soul -= a.soulCost
+        p2.soul += a.soulGain
         p1.capital -= a.capitalDmg
         p1.morale -= a.moraleDmg
         p1.soul -= a.soulDmg
-        if(a.special) resolveSpecial(a.special, p2, p1)
+        resolveSpecial(a.type, p2, p1)
     })
 }
 
-const resolveSpecial = (effect:SpecialEffect, attacker:PlayerStats, defender:PlayerStats) => {
+const resolveSpecial = (ability:Ability, attacker:PlayerStats, defender:PlayerStats) => {
     //TODO
 }
 

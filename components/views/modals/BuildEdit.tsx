@@ -4,10 +4,11 @@ import { Button, TopBar } from '../../Shared';
 import { onJoinMatch, onHideModal, onUpdatePlayer, onShowModal } from '../../uiManager/Thunks';
 import { connect } from 'react-redux';
 import Dialog from '../Dialog';
-import { Abilities, Ability, Modal } from '../../../enum';
+import { Ability, Modal } from '../../../enum';
 import Tooltip from 'rc-tooltip'
 import PlayerHistory, { AbilityTooltip } from '../PlayerHistory';
 import Provider from '../../../firebase/Network';
+import { Abilities } from '../../../functions/src/Abilities';
 
 interface Props {
     me?: PlayerStats

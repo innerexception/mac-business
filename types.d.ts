@@ -26,13 +26,15 @@ interface AbilityData {
     name: string
     description:string
     corp: import('./enum').Corporation
-    special: import('./enum').SpecialEffect
     moraleCost: number
     moraleDmg: number
+    moraleGain: number
     soulCost: number
     soulDmg: number
+    soulGain: number
     capitalCost: number
     capitalDmg: number
+    capitalGain: number
 }
 
 interface BuildHistory {
@@ -53,6 +55,7 @@ interface PlayerStats {
     capital:number
     morale:number
     soul:number
+    followers: number
 }
 
 interface PlayerVoteParams {

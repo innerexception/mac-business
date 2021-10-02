@@ -14,26 +14,26 @@ Bracketed Strategic Global Auto-battler
 
     Choose an employer:
         -Black (Chaotic Neutral, Wernstern Media)
-            Morale mitigation focus
-            Passive: decrease morale damage recieved based on number of followers (min 1)
+            Morale focus
+            Passive: decrease morale damage recieved based on number of followers (min 1), starts with 5 morale
             -Tweet of death (+1 follower)
             -Mouthpeice of Chaos (1 morale dmg + 1 follower)
-            -Casting Couch (-1 soul, 2 morale damage)
-            -Troll army (+1 follower, +1 morale)
+            -OnlyFams (-1 soul, 2 morale damage)
+            -Troll army (-1 soul, +1 follower, +1 morale)
             -Branded content (-1 soul, +1 capital, -1/+1 per follower)
 
         -Red (Chaotic Evil, Uvhash, Rontheon Arma)
             Soul damage only. Gains capital from dealing soul damage.
-            Passive: Gain 1 capital for each soul damage dealt while you have 0 soul
+            Passive: Gain 1 capital when you deal soul damage to an opponent with more than 4 capital
+                     Demonic Army (Chance on using Teleportation fields, will randomly spawn an imp in your bracket which attacks players at random)
             -Drone strike (-2 soul, 2 soul damage)
             -Both sides (-2 soul, 2 soul damage, +2 capital if opponent has more than 4 soul)
             -War on Terror (+3 capital, 3 soul damage if you have more than 5 capital)
             -Information Warfare (+1 morale, 1 soul damage if opponent has more than 5 soul)
             -Teleportation Fields (-3 soul, +1 capital and take another action)
-            -Demonic Army (Chance on using Teleportation fields, will randomly spawn an imp in your bracket which attacks players at random)
             
         -Green (Lawful Neutral, C'thalpa, Hells Fargo Bank)
-            Capital gains focus
+            Capital gains focus. Starts with -5 capital.
             Passive: On action, gain additional 1 capital if your opponent has less than 3 capital
             -Currency Manipulation (-3 Soul, +3 capital)
             -ARM Loans (+1 capital)
@@ -51,14 +51,14 @@ Bracketed Strategic Global Auto-battler
             -Private army (-1 morale, steal 1 soul)
 
         -Blue (Neutral Evil, Nyarlathotep, Elysium Medical Group)
-            Capital damage focus. 
-            Passive: Deal 1 soul damage to enemy when they use an ability that costs more than 1 soul
+            Capital damage focus. Can spend capital to deal soul dmg
+            Passive: Gain 1 capital for each soul damage dealt while you have 0 soul
             -Organ repo teams (2 soul, -2 morale, +1 capital)
             -Licensing Guild (1 soul, +1 capital for )
 
         -Yellow (Chaotic Evil, Yog-Sothoth, PardonPharma)
             Poison/Sleep focus on stacking drug types
-            Passive: Public research funding. Start with double soul.
+            Passive: Public research funding. Start with double soul. Deal 1 soul damage to an opponent when they use an ability that costs more than 1 soul.
             -OxyCalm (-2 soul, 1 soul damage each turn)
             -PowerThirst (-1 Soul, +3 morale)
             -Infinite Patents (+1 capital for each drug played this bracket)

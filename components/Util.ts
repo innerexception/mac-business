@@ -32,7 +32,8 @@ export const getNewPlayer = (name:string, uid:string):PlayerStats => {
         pendingVote: null,
         capital: 0,
         morale: 0,
-        soul: 0
+        soul: 0,
+        followers:0
     }
 }
 
