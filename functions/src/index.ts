@@ -4,6 +4,7 @@ import { EventContext } from "firebase-functions";
 import { CallableContext } from "firebase-functions/v1/https";
 import {Schemas} from '../../firebase/Schemas'
 import { v4 } from "uuid";
+import { Abilities } from "../../enum";
 
 admin.initializeApp()
 
@@ -33,7 +34,6 @@ const resolveCurrentBrackets = async (context:EventContext) => {
                 brackets
             })
         }
-        
     }
     else {
         //else, check if there are enough players to start a tournament
@@ -43,7 +43,7 @@ const resolveCurrentBrackets = async (context:EventContext) => {
         }
         else {
             //else, do nothing and update the timestamp
-            await updateTournament({...tourney, nextCheck: Date.now()})
+            await updateTournament({...tourney, lastCheck: Date.now()})
         }
     }
 }
@@ -67,9 +67,10 @@ const tryPlayerJoin = async (params:{player:PlayerStats}, ctx:CallableContext) =
             build: [],
             tournamentId: tourney.id
         }
-        const availableBracket = tourney.brackets.find(b=>!b.player2)
+        const availableBracket = tourney.brackets.find(b=>!b.player2 || !b.player1)
         if(availableBracket){
-            availableBracket.player2 = newPlayer
+            if(!availableBracket.player1) availableBracket.player1 = newPlayer
+            else availableBracket.player2 = newPlayer
         }
         else {
             tourney.brackets.push({
@@ -84,15 +85,35 @@ const tryPlayerJoin = async (params:{player:PlayerStats}, ctx:CallableContext) =
 }
 
 const playerLeft = async (params:{playerId:string}, ctx:CallableContext) => {
-    //TODO: remove player from tournament if it has not yet started. Remove the bracket if empty. Otherwise do nothing.
+    //remove player from tournament if it has not yet started. Remove the bracket if empty. Otherwise do nothing.
+    let tourney = await getTournament()
+    if(!tourney.hasStarted){
+        tourney.brackets.forEach(b=>{
+            if(b.player1?.uid === params.playerId) delete b.player1
+            if(b.player2?.uid === params.playerId) delete b.player2
+        })
+        tourney.brackets = tourney.brackets.filter(b=>b.player1 || b.player2)
+        await updateTournament(tourney)
+    }
 }
 
 const submitPlayerBuild = async (params:{player:PlayerStats}, ctx:CallableContext) => {
-    //TODO: replace the player's current build using ability ids only
+    //replace the player's current build using ability ids only
+    let player = await getPlayer(ctx.auth?.uid)
+    if(player){
+        player.build = params.player.build.map(b=>Abilities[b.type])
+        await updatePlayer(player)
+    }
 }
 
-const submitPlayerWager = async (params:{bracketId:string, amount:number}, ctx:CallableContext) => {
-    //TODO: replace the player's current bet on the given bracket
+const submitPlayerWager = async (params:Wager, ctx:CallableContext) => {
+    //replace the player's current bet on the given bracket
+    let player = await getPlayer(ctx.auth?.uid)
+    if(player){
+        player.wagers = player.wagers.filter(w=>w.bracketId !== params.bracketId)
+        player.wagers.push(params)
+        await updatePlayer(player)
+    }
 }
 
 const getTournament = async () => {
@@ -101,7 +122,19 @@ const getTournament = async () => {
 }
 
 const updateTournament = async (tournament:Tournament) => {
-    await admin.firestore().collection(Schemas.Collections.Tournaments.collectionName).doc('thing1').set({...tournament})
+    await admin.firestore().collection(Schemas.Collections.Tournaments.collectionName).doc('thing1').set(tournament)
+}
+
+const getPlayer = async (playerId?:string) => {
+    if(playerId){
+        let ref = await admin.firestore().collection(Schemas.Collections.User.collectionName).doc(playerId).get()
+        return ref.data() as PlayerStats
+    }
+    return undefined
+}
+
+const updatePlayer = async (player:PlayerStats) => {
+    await admin.firestore().collection(Schemas.Collections.User.collectionName).doc(player.uid).set(player)
 }
 
 const getNewTournament = ():Tournament => {
@@ -111,7 +144,8 @@ const getNewTournament = ():Tournament => {
         finalRound: 0,
         brackets: [],
         hasStarted:false,
-        hasEnded:false
+        hasEnded:false,
+        lastCheck: Date.now()
     }
 }
 

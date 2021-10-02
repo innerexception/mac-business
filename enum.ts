@@ -24,6 +24,14 @@ export enum CloudFunctions {
     onSubmitPlayerWager='onSubmitPlayerWager'
 }
 
+export enum Ability {
+
+}
+
+export const Abilities:Record<Ability, AbilityData> = {
+
+}
+
 export enum SpecialEffect {
     
 }

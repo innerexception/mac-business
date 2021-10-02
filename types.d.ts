@@ -5,17 +5,19 @@ interface Tournament {
     brackets: Array<Bracket>
     hasStarted:boolean
     hasEnded:boolean
+    lastCheck:number
 }
 
 interface Bracket {
     uid:string
     round: number
-    player1: PlayerStats
+    player1?: PlayerStats
     player2?: PlayerStats
 }
 
-interface Ability {
-    name:string
+interface AbilityData {
+    type: import('./enum').Ability
+    name: string
     description:string
     corp: import('./enum').Corporation
     special: import('./enum').SpecialEffect
@@ -28,7 +30,7 @@ interface Ability {
 }
 
 interface BuildHistory {
-    abilities: Array<Ability>
+    abilities: Array<AbilityData>
 }
 
 interface PlayerStats {
@@ -37,8 +39,15 @@ interface PlayerStats {
     avatarIndex:number
     employer: import('./enum').Corporation
     wins: Array<BuildHistory>
-    build: Array<Ability>
+    build: Array<AbilityData>
+    wagers: Array<Wager>
     tournamentId: string
+}
+
+interface Wager {
+    bracketId: string
+    amount: number
+    playerToWin: string
 }
 
 interface CorpoData {
