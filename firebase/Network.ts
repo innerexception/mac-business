@@ -131,6 +131,11 @@ class Network {
        return res.data
     }
 
+    onSubmitWager = async (params:Wager) => {
+        let res = await this.functions.httpsCallable(CloudFunctions.onSubmitPlayerWager)(params)
+        return res.data
+    }
+
     doSignInWithEmailAndPassword = (email:string, password:string) => this.auth.signInWithEmailAndPassword(email, password)
 
     doSignOut = () => this.auth.signOut()

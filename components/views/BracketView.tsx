@@ -1,13 +1,9 @@
 import * as React from 'react'
 import AppStyles, { colors } from '../../AppStyles';
-import { Button, TopBar } from '../Shared';
-import { onJoinMatch, onHideModal, onUpdatePlayer, onShowModal } from '../uiManager/Thunks';
+import { Button, NumericInput, TopBar } from '../Shared';
 import { connect } from 'react-redux';
-import Dialog from './Dialog';
-import { Avatars, Modal } from '../../enum';
-import Tooltip from 'rc-tooltip'
-import PlayerHistory from './PlayerHistory';
 import Bracket from './Bracket';
+import Provider from '../../firebase/Network';
 
 interface Props {
     me?: PlayerStats
@@ -15,11 +11,18 @@ interface Props {
     round:number
 }
 
+interface State {
+    wager:number
+}
+
 @(connect((state: RState) => ({
     me: state.onlineAccount,
     match: state.tournament
 })) as any)
-export default class BracketView extends React.PureComponent<Props> {
+export default class BracketView extends React.PureComponent<Props, State> {
+
+    state:State = { wager: 0 }
+
     render(){
         const brackets = this.props.match.brackets.filter(b=>b.round === this.props.round)
         return (
@@ -27,7 +30,21 @@ export default class BracketView extends React.PureComponent<Props> {
                 {brackets.map(b=>
                 <div>
                     <Bracket playerId={b.player1Id} myId={this.props.me.uid}/>
+                    {!this.props.me.tournamentId && 
+                    <div>
+                        <h5>Wager</h5>
+                        {NumericInput(this.state.wager, (val)=>this.setState({wager: val}), this.props.me.votes, 0)}
+                        {Button(true, ()=>Provider.onSubmitWager({ amount: this.state.wager, bracketId: b.uid, playerToWin: b.player1Id}), 'Wager')}
+                    </div>
+                    }
                     <Bracket playerId={b.player2Id} myId={this.props.me.uid}/>
+                    {!this.props.me.tournamentId && 
+                    <div>
+                        <h5>Wager</h5>
+                        {NumericInput(this.state.wager, (val)=>this.setState({wager: val}), this.props.me.votes, 0)}
+                        {Button(true, ()=>Provider.onSubmitWager({ amount: this.state.wager, bracketId: b.uid, playerToWin: b.player2Id}), 'Wager')}
+                    </div>
+                    }
                 </div>
                 )}
             </div>
