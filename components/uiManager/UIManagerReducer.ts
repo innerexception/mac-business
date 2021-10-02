@@ -16,7 +16,7 @@ const appReducer = (state = getInitialState(), action:any):RState => {
         case UIReducerActions.LEAVE_MATCH:
             return { ...state, modalState: {modal: Modal.LOBBY }}
         case UIReducerActions.LOGOUT:
-            if(state.onlineAccount) Provider.unsubscribeTourney(state.tournament, state.onlineAccount.uid)
+            if(state.onlineAccount) Provider.unsubscribeTourney(state.onlineAccount.uid)
             return getInitialState()
         case UIReducerActions.UPDATE_PLAYER:
             return { ...state, onlineAccount: action.player}
@@ -31,7 +31,7 @@ export default appReducer;
 
 const getInitialState = ():RState => {
     return {
-        modalState: { modal: Modal.MENU},
+        modalState: { modal: Modal.MENU },
         onlineAccount: null,
         tournament: null
     }

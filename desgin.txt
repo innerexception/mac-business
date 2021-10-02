@@ -78,8 +78,7 @@ Bracketed Strategic Global Auto-battler
     Winners get unique cosmetics but no coins
 
     Required views:
-        -Lobby system
         -Tournament bracket board
-            -All Can hover for details of any player's history (modal)
-            -If not currently a player, can bet on any bracket (modal)
-            -IF is a player, can edit yourselfs abilities + play order (modal)
+            +All Can hover for details of any player's history (modal)
+            +IF is a player, can edit yourselfs abilities + play order (modal) 
+            -If not currently a player, can bet on any bracket & see odds (modal) 

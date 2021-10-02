@@ -37,13 +37,37 @@ export enum Corporation {
     PardonPharma='PardonPharma'
 }
 
-export const CorpoData:Record<Corporation, CorpoData> = {
-    [Corporation.Elysium]: {color:'0x0000ff'},
-    [Corporation.HellBank]: {color:'0xff0000'},
-    [Corporation.McKillsie]: {color:'0xcccccc'},
-    [Corporation.PardonPharma]: {color:'0xff00ff'},
-    [Corporation.Rontheon]: {color:'0xff0000'},
-    [Corporation.Wernstern]: {color:'0x00ff00'},
+export const Corporations:Record<Corporation, CorpoData> = {
+    [Corporation.Elysium]: {
+        color:'0x0000ff',
+        description: "Leading innovations in extra dimensional health therapies. Join tomorrow's eternity today!",
+        name: 'Elysium Medical Group'
+    },
+    [Corporation.HellBank]: {
+        color:'0xff0000',
+        name: "Hell's Fargo Financial",
+        description: 'Got cash? Not for long!'
+    },
+    [Corporation.McKillsie]: {
+        color:'0xcccccc',
+        description: 'McKillsie Consulting has a proven track record of turning successful firms into decomposing yet still living piles of organic matter.',
+        name: 'McKillsie Consulting' 
+    },
+    [Corporation.PardonPharma]: {
+        color:'0xff00ff',
+        name: 'PardonPharma',
+        description: 'Like if El Chapo had lobbyists.'
+    },
+    [Corporation.Rontheon]: {
+        color:'0xff0000',
+        name: 'Rontheon Defense',
+        description: 'A proven track record of turning successful countries and individuals into smoking heaps of gory ash.'
+    },
+    [Corporation.Wernstern]: {
+        color:'0x00ff00',
+        name: 'Wernstern Media',
+        description: 'If you read it, we wrote it.'
+    },
 }
 
 export enum Modal {
@@ -51,12 +75,9 @@ export enum Modal {
     MENU,
     SCORES,
     LOBBY,
-    QUESTION,
-    MATCHES,
-    JUDGEMENT,
-    NO_ANSWERS,
     INFO,
-    NEW_ROUND
+    EDIT_BUILD,
+    CHOOSE_EMPLOYMENT
 }
 
 export const Avatars = [

@@ -4,7 +4,7 @@ import Provider from '../../firebase/Network'
 
 export const onLeaveMatch = () => {
     let state = store.getState()
-    Provider.unsubscribeTourney(state.tournament, state.onlineAccount.uid)
+    Provider.unsubscribeTourney(state.onlineAccount.uid)
     dispatch({
         type: UIReducerActions.LEAVE_MATCH
     })
@@ -48,7 +48,7 @@ export const onJoinMatch = async (matchId:string, player:PlayerStats) => {
     await Provider.joinMatch(matchId, player)
 }
 
-export const onMatchUpdated = (match:Tournament) => {
+export const onTournamentUpdated = (match:Tournament) => {
     dispatch({
         type: UIReducerActions.MATCH_UPDATED,
         match

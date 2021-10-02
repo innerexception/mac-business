@@ -4,8 +4,9 @@ import { firebaseConfig } from './firebase.config.js'
 // These imports load individual services into the firebase namespace.
 import 'firebase/auth';
 import 'firebase/firestore';
+import 'firebase/functions';
 import { Schemas } from './Schemas'
-import { onLoginUser, onMatchUpdated, onLogoutUser, onJoinExisting, onHideModal } from '../components/uiManager/Thunks';
+import { onLoginUser, onTournamentUpdated, onLogoutUser, onJoinExisting, onHideModal } from '../components/uiManager/Thunks';
 import { getNewPlayer } from '../components/Util';
 import { v4 } from 'uuid';
 import { CloudFunctions } from '../enum';
@@ -21,6 +22,7 @@ class Network {
     constructor(){
         this.db = firebase.firestore()
         this.auth = firebase.auth()
+        this.functions = firebase.functions()
         this.auth.onIdTokenChanged(async (user) => {
             if (user) {
                 let userData = getNewPlayer(user.displayName, user.uid)
@@ -29,17 +31,10 @@ class Network {
                     userData = uref.data() as PlayerStats
                 }
                 else this.db.collection(Schemas.Collections.User.collectionName).doc(user.uid).set(userData)
-                let ref = await this.db.collection(Schemas.Collections.Tournaments.collectionName).get()
-                let Tournaments = ref.docs.map(d=>d.data() as Tournament)
-                let existingMatch
-                for(let match of Tournaments){
-                    let player = match.brackets.find(b=>b.player1.playerId === userData.uid || b.player2.playerId === userData.uid)
-                    if(player) existingMatch = match
-                }
-                if(existingMatch){
-                    onJoinExisting(userData, existingMatch)
-                    this.subscribeToTourney(existingMatch.id)
-                    return
+                const tourney = await this.getTournament()
+                if(tourney){
+                    onJoinExisting(userData, tourney)
+                    this.subscribeToTourney(tourney.id)
                 }
                 onLoginUser(userData)
             } else {
@@ -71,18 +66,24 @@ class Network {
         }
     }
 
+    getTournament = async () => {
+        let ref = await this.db.collection(Schemas.Collections.Tournaments.collectionName).get()
+        let Tournaments = ref.docs.map(d=>d.data() as Tournament)
+        return Tournaments[0]
+    }
+
     subscribeToTourney = (id:string) => {
         if(this.unsub) console.warn('uhh, already subscribed to a match??')
         this.unsub = this.db.collection(Schemas.Collections.Tournaments.collectionName).doc(id)
         .onSnapshot(
             (snap) => {
                 let match = snap.data() as Tournament
-                onMatchUpdated(match)
+                onTournamentUpdated(match)
             }
         )
     }
 
-    unsubscribeTourney = (match:Tournament, playerId:string) => {
+    unsubscribeTourney = (playerId:string) => {
         if(this.unsub){
             this.unsub()
             this.unsub = null
@@ -97,6 +98,11 @@ class Network {
 
     tryJoinTournament = async (player:PlayerStats) => {
        let res = await this.functions.httpsCallable(CloudFunctions.onTryPlayerJoin)({player})
+       return res.data
+    }
+
+    onSubmitBuild = async (player:PlayerStats) => {
+       let res = await this.functions.httpsCallable(CloudFunctions.onSubmitPlayerBuild)({player})
        return res.data
     }
 
