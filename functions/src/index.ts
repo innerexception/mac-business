@@ -10,16 +10,16 @@ admin.initializeApp()
 const resolveCurrentBrackets = async (context:EventContext) => {
     let tourney = await getTournament()
     if(!tourney || tourney.hasEnded){
-        await admin.firestore().collection(Schemas.Collections.Tournaments.collectionName).doc('thing1').set(getNewTournament())
+        await updateTournament(getNewTournament())
         tourney = await getTournament()
     }
 
     if(tourney.hasStarted){
         //if there is an active tournament, calculate all brackets and advance/remove players
         const brackets = resolveBrackets(tourney.brackets)
-        if(tourney.activeBracket === tourney.finalBracket){
+        if(tourney.activeRound === tourney.finalRound){
             //end it after resolving
-            await admin.firestore().collection(Schemas.Collections.Tournaments.collectionName).doc('thing1').set({
+            await updateTournament({
                 ...tourney, 
                 hasEnded: true,
                 brackets
@@ -27,9 +27,9 @@ const resolveCurrentBrackets = async (context:EventContext) => {
         }
         else {
             //else advance to next
-            await admin.firestore().collection(Schemas.Collections.Tournaments.collectionName).doc('thing1').set({
+            await updateTournament({
                 ...tourney, 
-                activeBracket: tourney.activeBracket+1,
+                activeRound: tourney.activeRound+1,
                 brackets
             })
         }
@@ -39,11 +39,11 @@ const resolveCurrentBrackets = async (context:EventContext) => {
         //else, check if there are enough players to start a tournament
         if(tourney.brackets.length >= 4){
             //if so, start it
-            await admin.firestore().collection(Schemas.Collections.Tournaments.collectionName).doc('thing1').set({...tourney, hasStarted:true})
+            await updateTournament({...tourney, hasStarted:true})
         }
         else {
             //else, do nothing and update the timestamp
-            await admin.firestore().collection(Schemas.Collections.Tournaments.collectionName).doc('thing1').set({...tourney, nextCheck: Date.now()})
+            await updateTournament({...tourney, nextCheck: Date.now()})
         }
     }
 }
@@ -57,7 +57,30 @@ const resolveBrackets = (brackets:Array<Bracket>) => {
 }
 
 const tryPlayerJoin = async (params:{player:PlayerStats}, ctx:CallableContext) => {
-    //TODO: see if the tournament is active. If so, do nothing. If not, add player to next available bracket (or generate a new bracket), using employer and uid.
+    //see if the tournament is active. If so, do nothing. If not, add player to next available bracket (or generate a new bracket), using employer and uid.
+    let tourney = await getTournament()
+    if(tourney.hasStarted) return false
+    else {
+        const newPlayer:PlayerStats = {
+            ...params.player,
+            wins: [],
+            build: [],
+            tournamentId: tourney.id
+        }
+        const availableBracket = tourney.brackets.find(b=>!b.player2)
+        if(availableBracket){
+            availableBracket.player2 = newPlayer
+        }
+        else {
+            tourney.brackets.push({
+                uid: v4(),
+                round: 0,
+                player1: newPlayer
+            })
+        }
+        await updateTournament(tourney)
+        return true
+    }
 }
 
 const playerLeft = async (params:{playerId:string}, ctx:CallableContext) => {
@@ -77,11 +100,15 @@ const getTournament = async () => {
     return ref.docs[0].data() as Tournament
 }
 
+const updateTournament = async (tournament:Tournament) => {
+    await admin.firestore().collection(Schemas.Collections.Tournaments.collectionName).doc('thing1').set({...tournament})
+}
+
 const getNewTournament = ():Tournament => {
     return {
         id:v4(),
-        activeBracket: 0,
-        finalBracket: 0,
+        activeRound: 0,
+        finalRound: 0,
         brackets: [],
         hasStarted:false,
         hasEnded:false

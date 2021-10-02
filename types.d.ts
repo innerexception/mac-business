@@ -1,16 +1,17 @@
 interface Tournament {
     id:string
-    activeBracket: number
-    finalBracket: number
+    activeRound: number
+    finalRound: number
     brackets: Array<Bracket>
     hasStarted:boolean
+    hasEnded:boolean
 }
 
 interface Bracket {
     uid:string
     round: number
     player1: PlayerStats
-    player2: PlayerStats
+    player2?: PlayerStats
 }
 
 interface Ability {

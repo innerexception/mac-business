@@ -52,9 +52,9 @@ Bracketed Strategic Global Auto-battler
 
         -Blue (Neutral Evil, Nyarlathotep, Elysium Medical Group)
             Soul damage focus. 
-            Passive: 
-            -Organ donation. You may take an opponent's soul in exchange for your morale
-            
+            Passive: Deal 1 soul damage to enemy when they use an ability that costs more than 1 soul
+            -Organ repo teams (2 soul, -2 morale, +1 capital)
+            -Licensing Guild (1 soul, +1 capital for )
 
         -Yellow (Chaotic Evil, Yog-Sothoth, PardonPharma)
             Poison/Sleep focus on stacking drug types
