@@ -78,6 +78,11 @@ class Network {
         return ref.docs.map(d=>d.data() as EdictData)
     }
 
+    fetchPlayer = async (playerId:string) => {
+        let ref = await this.db.collection(Schemas.Collections.User.collectionName).doc(playerId).get()
+        return ref.data() as PlayerStats
+    }
+
     subscribeToTourney = (id:string, playerId:string) => {
         if(this.unsub) console.warn('uhh, already subscribed to a match??')
         this.unsub = this.db.collection(Schemas.Collections.Tournaments.collectionName).doc(id)

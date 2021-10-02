@@ -7,6 +7,7 @@ import Dialog from './Dialog';
 import { Avatars, Modal } from '../../enum';
 import Tooltip from 'rc-tooltip'
 import PlayerHistory from './PlayerHistory';
+import Bracket from './Bracket';
 
 interface Props {
     me?: PlayerStats
@@ -25,25 +26,11 @@ export default class BracketView extends React.PureComponent<Props> {
             <div>
                 {brackets.map(b=>
                 <div>
-                    <Tooltip overlay={<PlayerHistory history={b.player1.currentWins}/>} placement="bottom">
-                        <div style={{display:'flex'}}>
-                            {Avatar(b.player1.avatarIndex)}
-                            <h5>{b.player1.name}</h5>
-                            {b.player1.uid === this.props.me.uid && Button(true, ()=>onShowModal(Modal.EDIT_BUILD), 'Edit')}
-                        </div>
-                    </Tooltip>
-                    <Tooltip overlay={<PlayerHistory history={b.player2.currentWins}/>} placement="bottom">
-                        <div style={{display:'flex'}}>
-                            {Avatar(b.player2.avatarIndex)}
-                            <h5>{b.player2.name}</h5>
-                            {b.player2.uid === this.props.me.uid && Button(true, ()=>onShowModal(Modal.EDIT_BUILD), 'Edit')}
-                        </div>
-                    </Tooltip>
+                    <Bracket playerId={b.player1} myId={this.props.me.uid}/>
+                    <Bracket playerId={b.player2} myId={this.props.me.uid}/>
                 </div>
                 )}
             </div>
         )
     }
 }
-
-export const Avatar = (avatarIndex:number) => <span style={{fontFamily:'avatar', paddingLeft:'5px', paddingTop:'4px', color:'orange'}}>{Avatars[avatarIndex]}</span>
