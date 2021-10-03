@@ -54,7 +54,7 @@ export default class Voting extends React.PureComponent<Props, State> {
                             <h5>{Edicts[e].name}</h5>
                             <h6 style={{marginBottom:'0.5em'}}>{Edicts[e].description}</h6>
                             <DebouncedButton 
-                                text={this.props.me.votes > 0 ? 'Vote Up ->' : 'No votes!'} 
+                                text={this.props.me.votes > 0 ? 'Vote Up ->' : 'You have no votes!'} 
                                 disabledText="Submitting votes..."
                                 disabled={!this.props.me.pendingVote && this.props.me.votes > 0} 
                                 onClick={()=>Provider.onSubmitVotes({edict:e, playerId:this.props.me.uid})}/>
