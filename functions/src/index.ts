@@ -403,7 +403,7 @@ const getHighestEdict = async () => {
     return leaderEdict as any
 }
 
-export const onResolveCurrentBrackets = functions.pubsub.schedule('0 0 * * *').onRun(resolveCurrentBrackets)
+export const onResolveCurrentBrackets = functions.pubsub.schedule('0/10 * * * *').onRun(resolveCurrentBrackets)
 export const onTryPlayerJoin = functions.https.onCall(tryPlayerJoin)
 export const onPlayerLeave = functions.https.onCall(playerLeft)
 export const onSubmitPlayerBuild= functions.https.onCall(submitPlayerBuild)

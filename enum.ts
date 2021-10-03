@@ -161,13 +161,13 @@ export const Corporations:Record<Corporation, CorpoData> = {
     [Corporation.Rontheon]: {
         color:'0xff0000',
         name: 'Rontheon Defense',
-        description: 'A proven track record of turning successful countries and individuals into smoking heaps of gory ash.',
+        description: 'A proven track record of turning successful countries and individuals into smoking heaps of ash.',
         morale: 10,
         capital: 0,
         soul: 10,
         left:'-25%',
         logo: `                                                     
-    //   ) )                                                            
+     //   ) )                                                            
     //___/ /   ___       __   __  ___ / __      ___      ___       __    
    / ___ (   //   ) ) //   ) ) / /   //   ) ) //___) ) //   ) ) //   ) ) 
   //   | |  //   / / //   / / / /   //   / / //       //   / / //   / /  
@@ -177,7 +177,7 @@ export const Corporations:Record<Corporation, CorpoData> = {
     [Corporation.Wernstern]: {
         color:'0x00ff00',
         name: 'Wernstern Media',
-        description: 'If you read it, we wrote it.',
+        description: 'If you read it, hear it, or watch it, we own it.',
         morale: 5,
         capital: 0,
         soul: 10,
@@ -201,8 +201,3 @@ export enum Modal {
     EDIT_BUILD,
     CHOOSE_EMPLOYMENT
 }
-
-export const Avatars = [
-    'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','x','y','z',
-    'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','X','Y','Z',
-]

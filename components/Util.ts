@@ -1,6 +1,3 @@
-import { v4 } from 'uuid';
-import { Avatars, Corporation } from '../enum';
-
 enum FirebaseAuthError {
     NOT_FOUND='auth/user-not-found',
     BAD_EMAIL='auth/invalid-email',
@@ -22,7 +19,7 @@ export const getNewPlayer = (name:string, uid:string):PlayerStats => {
     return {
         uid,
         name,
-        avatarIndex:between(0,Avatars.length-1),
+        avatarIndex:0,
         employer: null,
         currentWins: [],
         build: [],

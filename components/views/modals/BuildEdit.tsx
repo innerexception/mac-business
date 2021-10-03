@@ -9,6 +9,7 @@ import PlayerHistory, { AbilityTooltip } from '../PlayerHistory';
 import Provider from '../../../firebase/Network';
 import { Abilities } from '../../../functions/src/Abilities';
 import { onHideModal } from '../../uiManager/Thunks';
+import DebouncedButton from '../DebouncedButton';
 
 interface Props {
     me?: PlayerStats
@@ -86,7 +87,9 @@ export default class BuildEdit extends React.PureComponent<Props, State> {
                         )}
                     </div>
                 </div>
-                {Button(true, ()=>{Provider.onSubmitBuild({...this.props.me, build: this.state.build});onHideModal()}, 'Lock In')}
+                <h4>To harvest a soul, reduce their morale to 0 or buy them out with 10 capital</h4>
+                
+                <DebouncedButton disabledText="Saving Actions..." onClick={()=>{Provider.onSubmitBuild({...this.props.me, build: this.state.build});onHideModal()}} text='Lock In'/>
             </div>
         )
     }

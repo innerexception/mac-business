@@ -3,10 +3,11 @@ import AppStyles, { colors } from '../../AppStyles';
 import { Button, NumericInput, TopBar } from '../Shared';
 import { onJoinMatch, onHideModal, onUpdatePlayer, onShowModal } from '../uiManager/Thunks';
 import Dialog from './Dialog';
-import { Avatars, Corporations, Modal } from '../../enum';
+import { Corporations, Modal } from '../../enum';
 import Tooltip from 'rc-tooltip'
 import PlayerHistory from './PlayerHistory';
 import Provider from '../../firebase/Network';
+import DebouncedButton from './DebouncedButton';
 
 interface Props {
     playerId:string
@@ -46,7 +47,7 @@ export default class Bracket extends React.PureComponent<Props, State> {
                     {!this.props.isParticipant &&
                     <div>
                         {NumericInput(this.state.wager, (val)=>this.setState({wager: val}), this.state.player.votes, 0)}
-                        {Button(true, ()=>Provider.onSubmitWager({ amount: this.state.wager, bracketId: this.props.bracketId, playerToWin: this.state.player.uid}), 'Place Bet')}
+                        <DebouncedButton text='Place Bet' disabledText='Placing bet...' onClick={()=>Provider.onSubmitWager({ amount: this.state.wager, bracketId: this.props.bracketId, playerToWin: this.state.player.uid})}/>
                     </div>
                     }
                 </div>

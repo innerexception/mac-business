@@ -4,6 +4,7 @@ import Provider from '../../../firebase/Network';
 import { Corporations, Edict, EdictArray, Edicts } from '../../../enum';
 import { connect } from 'react-redux';
 import AppStyles from '../../../AppStyles';
+import DebouncedButton from '../DebouncedButton';
 
 interface Props {
     me?:PlayerStats
@@ -52,7 +53,11 @@ export default class Voting extends React.PureComponent<Props, State> {
                         <div style={{marginBottom:'1em'}}>
                             <h5>{Edicts[e].name}</h5>
                             <h6 style={{marginBottom:'0.5em'}}>{Edicts[e].description}</h6>
-                            {Button(!this.props.me.pendingVote && this.props.me.votes > 0, ()=>Provider.onSubmitVotes({edict:e, playerId:this.props.me.uid}), this.props.me.votes > 0 ? 'Vote Up ->' : 'No votes!')}
+                            <DebouncedButton 
+                                text={this.props.me.votes > 0 ? 'Vote Up ->' : 'No votes!'} 
+                                disabledText="Submitting votes..."
+                                disabled={!this.props.me.pendingVote && this.props.me.votes > 0} 
+                                onClick={()=>Provider.onSubmitVotes({edict:e, playerId:this.props.me.uid})}/>
                         </div>
                 )}
             </div>
