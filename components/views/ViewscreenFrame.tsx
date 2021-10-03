@@ -54,6 +54,7 @@ export default class ViewscreenFrame extends React.Component<Props> {
                             <div style={{width:'200px'}}><BracketView round={i+1}/></div>
                             )}
                         </div>
+                        {tourney.hasStarted && 
                         <div style={{width:'100%'}}>
                             <h4 style={{marginBottom:'1em'}}>Messages</h4>
                             {tourney.brackets.map(b=>b.messages).map(bracket=>
@@ -63,7 +64,7 @@ export default class ViewscreenFrame extends React.Component<Props> {
                                     )}
                                 </div>
                             )}
-                        </div>
+                        </div>}
                     </div> : <div>Connecting...</div>}
                 </div> 
             )
