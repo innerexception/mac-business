@@ -20,21 +20,23 @@ const resolveCurrentBrackets = async (context:EventContext) => {
     if(tourney.hasStarted){
         //if there is an active tournament, calculate all brackets and advance/remove players
         const players = await getPlayers()
-        const brackets = resolveBrackets(tourney.brackets, players, tourney.activeRound+1)
+        const brackets = await resolveBrackets(tourney.brackets, players, tourney.activeRound+1)
         const roundBrackets = brackets.filter(b=>b.round === tourney.activeRound+1)
         if(roundBrackets.length === 0){
             //start voting on edicts
             await updateTournament({
                 ...tourney, 
                 isVoting: true,
-                brackets
+                brackets,
+                lastCheck: Date.now()
             })
         }
         else if(tourney.isVoting){
             //end it and save voting result
             await updateTournament({
                 ...tourney, 
-                hasEnded: true
+                hasEnded: true,
+                lastCheck: Date.now()
             })
             let votedModifier = await getHighestEdict()
             await admin.firestore().collection(Schemas.Collections.Edicts.collectionName).doc(votedModifier).set({active: true})
@@ -44,7 +46,8 @@ const resolveCurrentBrackets = async (context:EventContext) => {
             await updateTournament({
                 ...tourney, 
                 activeRound: tourney.activeRound+1,
-                brackets
+                brackets,
+                lastCheck: Date.now()
             })
         }
     }
@@ -52,7 +55,7 @@ const resolveCurrentBrackets = async (context:EventContext) => {
         //else, check if there are enough players to start a tournament
         if(tourney.brackets.length >= 2){
             //if so, start it
-            await updateTournament({...tourney, hasStarted:true})
+            await updateTournament({...tourney, hasStarted:true, lastCheck: Date.now()})
         }
         else {
             //else, do nothing and update the timestamp
@@ -61,15 +64,17 @@ const resolveCurrentBrackets = async (context:EventContext) => {
     }
 }
 
-const resolveBrackets = (brackets:Array<Bracket>, players:Array<PlayerStats>, nextRound:number) => {
+const resolveBrackets = async (brackets:Array<Bracket>, players:Array<PlayerStats>, nextRound:number) => {
 
-    let messages = []
     let deletedPlayerIds = new Array<string>()
     brackets.forEach(b=>{
+        let messages = []
+    
         //1. Resolve each bracket
+        let winnerId=''
         //TODO: Apply edicts as appropriate
-        let p1 = players.find(p=>p.uid === b.player1Id)
-        let p2 = players.find(p=>p.uid === b.player2Id)
+        let p1 = players.find(p=>p.uid === b.player1Id && p.build.length > 0)
+        let p2 = players.find(p=>p.uid === b.player2Id && p.build.length > 0)
         if(p1 && p2){
             while(p1.morale > 0 && p2.morale > 0 && p1.capital < 10 && p2.capital < 10){
                 //Resolve builds
@@ -117,8 +122,6 @@ const resolveBrackets = (brackets:Array<Bracket>, players:Array<PlayerStats>, ne
                 delete b.player2Id
             }
 
-            let winnerId=''
-
             //Now there should be only 1 player in each bracket. Update player win history
             if(b.player1Id){
                 winnerId = b.player1Id
@@ -129,24 +132,48 @@ const resolveBrackets = (brackets:Array<Bracket>, players:Array<PlayerStats>, ne
                 p2.currentWins.push({abilities: p2.build})
             }
 
-            //Now Pay out winners of bracket
-            if(winnerId){
-                players.forEach(p=>{
-                    if(p.uid === winnerId) p.wins++
-                    const wager = p.wagers.find(w=>w.bracketId===b.uid && w.playerToWin === winnerId)
-                    if(wager){
-                        p.votes += (wager.amount * b.odds)
-                        p.wagers = p.wagers.filter(w=>w.bracketId !== b.uid)
-                    }
-                })
-            }
         }
+        else if(p1){
+            messages.push({ text: p1.name+' showed up.'})
+            winnerId = p1.uid
+            p1.currentWins.push({abilities: p1.build})
+            deletedPlayerIds.push(b.player2Id as string)
+            delete b.player2Id
+        }
+        else if(p2){
+            messages.push({ text: p2.name+' showed up.'})
+            winnerId = p2.uid
+            p2.currentWins.push({abilities: p2.build})
+            deletedPlayerIds.push(b.player1Id as string)
+            delete b.player1Id
+        }
+        else {
+            deletedPlayerIds.push(b.player1Id as string)
+            deletedPlayerIds.push(b.player2Id as string)
+            delete b.player1Id
+            delete b.player2Id
+        }
+        
+        //Now Pay out winners of bracket
+        if(winnerId){
+            players.forEach(p=>{
+                if(p.uid === winnerId) p.wins++
+                const wager = p.wagers.find(w=>w.bracketId===b.uid && w.playerToWin === winnerId)
+                if(wager){
+                    p.votes += (wager.amount * b.odds)
+                    p.wagers = p.wagers.filter(w=>w.bracketId !== b.uid)
+                }
+            })
+        }
+
+        // send messages
+        b.messages = messages
     })
 
     //Save updated player info
     for(let player of players){
         if(deletedPlayerIds.includes(player.uid)) player.tournamentId = ''
-        admin.firestore().collection(Schemas.Collections.User.collectionName).doc(player.uid).set(player)
+        await admin.firestore().collection(Schemas.Collections.User.collectionName).doc(player.uid).set(player)
     }
 
     //Generate new brackets
@@ -165,11 +192,11 @@ const resolveBrackets = (brackets:Array<Bracket>, players:Array<PlayerStats>, ne
             round: nextRound,
             odds: 1, //TODO: varies by player win ratio difference
             player1Id: remainingPlayers[i],
-            player2Id: remainingPlayers[i+1]
+            player2Id: remainingPlayers[i+1],
+            messages:[]
         })
     }
 
-    //TODO: send messages
 
     return brackets.concat(nBrackets)
 }
@@ -237,7 +264,8 @@ const tryPlayerJoin = async (params:PlayerStats, ctx:CallableContext) => {
                 uid: v4(),
                 round: 1,
                 odds: 1, //TODO: varies by player win ratio difference
-                player1Id: newPlayer.uid
+                player1Id: newPlayer.uid,
+                messages: []
             })
         }
         await updateTournament(tourney)

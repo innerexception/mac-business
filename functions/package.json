@@ -3,7 +3,7 @@
   "scripts": {
     "build": "tsc",
     "shell": "firebase use default && tsc && export GOOGLE_APPLICATION_CREDENTIALS='./authKey.json' && firebase functions:shell --inspect-functions",
-    "deploy": "firebase deploy --only functions:onTryPlayerJoin",
+    "deploy": "firebase deploy --only functions:onResolveCurrentBrackets",
     "logs": "firebase functions:log"
   },
   "engines": {
