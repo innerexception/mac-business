@@ -150,6 +150,7 @@ const resolveBrackets = async (brackets:Array<Bracket>, players:Array<PlayerStat
             delete b.player1Id
         }
         else {
+            messages.push({ text: 'No one had an action plan!! Both employees eliminated.'})
             deletedPlayerIds.push(b.player1Id as string)
             deletedPlayerIds.push(b.player2Id as string)
             delete b.player1Id
@@ -403,7 +404,7 @@ const getHighestEdict = async () => {
     return leaderEdict as any
 }
 
-export const onResolveCurrentBrackets = functions.pubsub.schedule('0/10 * * * *').onRun(resolveCurrentBrackets)
+export const onResolveCurrentBrackets = functions.pubsub.schedule('0/5 * * * *').onRun(resolveCurrentBrackets)
 export const onTryPlayerJoin = functions.https.onCall(tryPlayerJoin)
 export const onPlayerLeave = functions.https.onCall(playerLeft)
 export const onSubmitPlayerBuild= functions.https.onCall(submitPlayerBuild)
