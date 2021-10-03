@@ -19,6 +19,7 @@ interface Bracket {
     odds: number
     player1Id?: string
     player2Id?: string
+    messages:Array<{text:string}>
 }
 
 interface AbilityData {

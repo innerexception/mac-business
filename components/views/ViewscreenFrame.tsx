@@ -49,9 +49,19 @@ export default class ViewscreenFrame extends React.Component<Props> {
                             <div style={{width:'200px', textAlign:'center'}}>Round {i+1}</div>
                             )}
                         </div>
-                        <div style={{overflow:'auto', maxHeight:'85vh', width:'100%'}}>
+                        <div style={{overflow:'auto', maxHeight:'75vh', width:'100%'}}>
                             {new Array(tourney.activeRound).fill({}).map((b,i)=>
                             <div style={{width:'200px'}}><BracketView round={i+1}/></div>
+                            )}
+                        </div>
+                        <div style={{width:'100%'}}>
+                            <h4>Messages</h4>
+                            {tourney.brackets.map(b=>b.messages).map(msg=>
+                                <div>
+                                {msg.map(text=>
+                                    <div>{text.text}</div>    
+                                )}
+                                </div>
                             )}
                         </div>
                     </div> : <div>Connecting...</div>}
