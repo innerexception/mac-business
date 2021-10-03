@@ -4,7 +4,7 @@ import { EventContext } from "firebase-functions";
 import { CallableContext } from "firebase-functions/v1/https";
 import {Schemas} from '../../firebase/Schemas'
 import { v4 } from "uuid";
-import { Ability, Corporations, Edict } from "../../enum";
+import { Ability, Corporations } from "../../enum";
 import { Abilities } from "./Abilities";
 
 admin.initializeApp()
@@ -84,7 +84,7 @@ const resolveBrackets = async (brackets:Array<Bracket>, players:Array<PlayerStat
             //Now Somebody is at 0 morale or 10 cap (could both be eliminated) in this bracket
             //Player 1
             if(p1.morale<=0 ){
-                messages.push({ text: p1.name+' was driven insane by '+p2.name})
+                messages.push({ text: p1.name+' was driven insane by '+p2.name+'!'})
                 deletedPlayerIds.push(b.player1Id as string)
                 delete b.player1Id
             }
@@ -97,14 +97,14 @@ const resolveBrackets = async (brackets:Array<Bracket>, players:Array<PlayerStat
                 }
             }
             else if(p1.capital >= 10 && p1.capital > p2.capital){
-                messages.push({ text: p1.name+' bought out '+p2.name})
+                messages.push({ text: p1.name+' bought out '+p2.name+'!'})
                 deletedPlayerIds.push(b.player1Id as string)
                 delete b.player1Id
             }
 
             //Player 2
             if(p2.morale<=0){
-                messages.push({ text: p2.name+' was driven insane by '+p1.name})
+                messages.push({ text: p2.name+' was driven insane by '+p1.name+'!'})
                 deletedPlayerIds.push(b.player2Id as string)
                 delete b.player2Id
             }
@@ -117,7 +117,7 @@ const resolveBrackets = async (brackets:Array<Bracket>, players:Array<PlayerStat
                 }
             }
             else if(p2.capital >= 10 && p2.capital > p1.capital){
-                messages.push({ text: p2.name+' bought out '+p1.name})
+                messages.push({ text: p2.name+' bought out '+p1.name+'!'})
                 deletedPlayerIds.push(b.player2Id as string)
                 delete b.player2Id
             }
@@ -371,7 +371,7 @@ const getNewTournament = ():Tournament => {
 }
 
 interface VotesHash {
-    [thing:string]:number
+    [thing:number]:number
 }
 
 const getHighestEdict = async () => {
@@ -385,7 +385,7 @@ const getHighestEdict = async () => {
         else voteHash[p.pendingVote]+=p.votes
     })
     let leaderVotes = 0
-    let leaderEdict = ''
+    let leaderEdict = null
     for(let edict in voteHash){
         if(voteHash[edict] > leaderVotes){
             leaderVotes = voteHash[edict]
@@ -397,7 +397,7 @@ const getHighestEdict = async () => {
         admin.firestore().collection(Schemas.Collections.User.collectionName).doc(player.uid).set({...player, votes: 0, pendingVote: null })
     }
 
-    return leaderEdict as Edict
+    return leaderEdict as any
 }
 
 export const onResolveCurrentBrackets = functions.pubsub.schedule('0 0 * * *').onRun(resolveCurrentBrackets)

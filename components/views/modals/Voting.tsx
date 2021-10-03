@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Button, TopBar } from '../../Shared';
 import Provider from '../../../firebase/Network';
-import { Edict, Edicts } from '../../../enum';
+import { Edict, EdictArray, Edicts } from '../../../enum';
 import { connect } from 'react-redux';
 import AppStyles from '../../../AppStyles';
 
@@ -18,7 +18,7 @@ export default class Voting extends React.PureComponent<Props> {
         return (
             <div style={{...AppStyles.modal, ...AppStyles.centered}}>
                 <h4>Your votes: {this.props.me.votes}</h4>
-                {Object.keys(Edict).map((e:Edict)=>
+                {EdictArray.map(e=>
                     <div style={{width:'100px'}}>
                         <h5>{Edicts[e].name}</h5>
                         <h6>{Edicts[e].description}</h6>

@@ -9,8 +9,9 @@ interface Tournament {
 }
 
 interface EdictData {
-    name:import('./enum').Edict
+    name:string
     description:string
+    type:import('./enum').Edict
 }
 
 interface Bracket {

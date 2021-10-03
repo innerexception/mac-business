@@ -27,12 +27,15 @@ export enum CloudFunctions {
 }
 
 export enum Edict {
-    SoulDeficit='Soul Deficit'
+    SoulDeficit
 }
+
+export const EdictArray = [Edict.SoulDeficit]
 
 export const Edicts:Record<Edict, EdictData> = {
     [Edict.SoulDeficit]: {
-        name: Edict.SoulDeficit,
+        type: Edict.SoulDeficit,
+        name: 'Soul Deficits',
         description: "Soul values may go negative. Our extra dimensional 'friends' are more attracted to such people."
     }
 }
