@@ -38,7 +38,7 @@ export default class ViewscreenFrame extends React.Component<Props> {
                     {tourney ? 
                     <div style={{display:'flex', flexDirection:'column', alignItems:'center', margin:'1em', width:'100%'}}>
                         {this.props.me?.employer != undefined ? <div style={{marginBottom:'1em'}}>{this.props.me.name} Personal Portal c2034 {Corporations[this.props.me.employer].name}</div> : <div style={{marginBottom:'1em'}}>Employee Personal Portal (Spectator)</div>}
-                        {tourney.hasStarted ?
+                        {tourney.hasStarted && !tourney.isVoting ?
                             <div>Next round locks in {10-new Date(Date.now()-tourney.lastCheck).getMinutes()} min</div> :
                             <div>Next Tournament in {10-new Date(Date.now()-tourney.lastCheck).getMinutes()} min</div>
                         }
@@ -54,17 +54,17 @@ export default class ViewscreenFrame extends React.Component<Props> {
                             <div style={{width:'200px'}}><BracketView round={i+1}/></div>
                             )}
                         </div>
+                        {tourney.hasStarted && 
                         <div style={{width:'100%'}}>
                             <h4 style={{marginBottom:'1em'}}>Messages</h4>
-                            {tourney.brackets.map(b=>b.messages).map((msg,i)=>
+                            {tourney.brackets.map(b=>b.messages).map(bracket=>
                                 <div>
-                                    <h6>Round {i+1}</h6>
-                                    {msg.map(text=>
+                                    {bracket.map(text=>
                                         <div>{text.text}</div>    
                                     )}
                                 </div>
                             )}
-                        </div>
+                        </div>}
                     </div> : <div>Connecting...</div>}
                 </div> 
             )

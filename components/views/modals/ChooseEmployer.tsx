@@ -39,21 +39,30 @@ export default class ChooseEmployer extends React.PureComponent<Props, State> {
         const employer = Corpos[this.state.selectedIndex] as Corporation
         const data = Corporations[employer] as CorpoData
         return (
-            <div style={{...AppStyles.modal, ...AppStyles.centered}}>
-                <div style={{backgroundColor:data.color}}>
-                    <div>
-                        <h6 style={{whiteSpace:'pre-wrap', fontSize:'6px'}}>{data.logo}</h6>
+            <div style={{...AppStyles.modal, ...AppStyles.centered, width:'500px'}}>
+                <h4 style={{textAlign:'center', marginBottom:'1em'}}>Choose a subsidiary to represent</h4>
+                <div>
+                    <div style={{display:'flex'}}>
+                        <div style={{marginBottom:'1em', width:'85%'}}>
+                            <div>
+                                <h6 style={{whiteSpace:'pre-wrap', fontSize:'6px'}}>{data.logo}</h6>
+                            </div>
+                            <h5 style={{marginBottom:'0.5em'}}>{data.name}</h5>
+                            <h6>{data.description}</h6>
+                        </div>
+                        <div style={{display:'flex', alignItems:'center'}}>
+                            {Button(true, this.increment, 'Next ->')}
+                        </div>
                     </div>
-                    <h5>{data.name}</h5>
-                    <h6>{data.description}</h6>
-                    {Button(true, this.increment, 'Next ->')}
                 </div>
                 <div>
+                    <h5>Enter Employee Name</h5>
                     <input value={this.state.name} onChange={(e)=>this.setState({name:e.currentTarget.value})}/>
                 </div>
-                <div style={{display:"flex"}}>
-                    {Button(true, ()=>this.tryJoin(employer), 'Sign Handbook (in blood)')}
-                    {Button(true, onHideModal, 'Nevermind')}
+                <div style={{display:"flex", marginTop:'1em', justifyContent:'space-between'}}>
+                    {Button(this.state.name ? true : false, ()=>this.tryJoin(employer), 'Sign Handbook (in blood)')}
+                    or
+                    {Button(this.state.name ? true : false, onHideModal, 'Spectate')}
                 </div>
             </div>
         )
