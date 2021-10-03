@@ -1,6 +1,6 @@
 import * as React from 'react'
 import AppStyles, { colors } from '../../AppStyles';
-import { Button, TopBar } from '../Shared';
+import { Button, NumericInput, TopBar } from '../Shared';
 import { onJoinMatch, onHideModal, onUpdatePlayer, onShowModal } from '../uiManager/Thunks';
 import Dialog from './Dialog';
 import { Avatars, Corporations, Modal } from '../../enum';
@@ -11,16 +11,21 @@ import Provider from '../../firebase/Network';
 interface Props {
     playerId:string
     myId:string
+    bracketId:string
+    isParticipant:boolean
+    wager: Wager
 }
 
 interface State {
     player: PlayerStats
+    wager: number
 }
 
 export default class Bracket extends React.PureComponent<Props, State> {
 
     state:State = {
-        player: null
+        player: null,
+        wager: this.props.wager? this.props.wager.amount : 0
     }
 
     componentDidMount = async () => {
@@ -38,6 +43,12 @@ export default class Bracket extends React.PureComponent<Props, State> {
                     </div>
                     <h5 style={{textAlign:'center', marginBottom:'0.5em', marginTop:'0.5em'}}>{this.state.player.name}</h5>
                     {this.state.player.uid === this.props.myId && Button(true, ()=>onShowModal(Modal.EDIT_BUILD), 'Edit')}
+                    {!this.props.isParticipant &&
+                    <div>
+                        {NumericInput(this.state.wager, (val)=>this.setState({wager: val}), this.state.player.votes, 0)}
+                        {Button(true, ()=>Provider.onSubmitWager({ amount: this.state.wager, bracketId: this.props.bracketId, playerToWin: this.state.player.uid}), 'Place Bet')}
+                    </div>
+                    }
                 </div>
             </Tooltip> : 
             <h5 style={{textAlign:'center'}}>{"<empty>"}</h5>
