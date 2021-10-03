@@ -19,15 +19,19 @@ const resolveCurrentBrackets = async (context:EventContext) => {
 
     if(tourney.hasStarted){
         //if there is an active tournament, calculate all brackets and advance/remove players
+        const players = await getPlayers()
         if(tourney.isVoting){
             //end it and save voting result
             let votedModifier = await getHighestEdict()
-            await admin.firestore().collection(Schemas.Collections.Edicts.collectionName).doc(votedModifier.toString()).set({active: true})
+            if(votedModifier) await admin.firestore().collection(Schemas.Collections.Edicts.collectionName).doc(votedModifier.toString()).set({active: true})
             const newTourney = getNewTournament()
+            let active = players.filter(p=>p.tournamentId)
+            for(let pl of active){
+                await updatePlayer({...pl, tournamentId: ''})
+            }
             await updateTournament(newTourney)
             return
         }
-        const players = await getPlayers()
         const brackets = await resolveBrackets(tourney.brackets, players, tourney.activeRound+1)
         const roundBrackets = brackets.filter(b=>b.round === tourney.activeRound+1)
         if(roundBrackets.length === 0){
@@ -82,7 +86,7 @@ const resolveBrackets = async (brackets:Array<Bracket>, players:Array<PlayerStat
             //Now Somebody is at 0 morale or 10 cap (could both be eliminated) in this bracket
             //Player 1
             if(p1.morale<=0 ){
-                messages.push({ text: p1.name+' was driven insane by '+p2.name})
+                messages.push({ text: p1.name+' was driven insane by '+p2.name+'!'})
                 deletedPlayerIds.push(b.player1Id as string)
                 delete b.player1Id
             }
@@ -95,14 +99,14 @@ const resolveBrackets = async (brackets:Array<Bracket>, players:Array<PlayerStat
                 }
             }
             else if(p1.capital >= 10 && p1.capital > p2.capital){
-                messages.push({ text: p1.name+' bought out '+p2.name})
+                messages.push({ text: p1.name+' bought out '+p2.name+'!'})
                 deletedPlayerIds.push(b.player1Id as string)
                 delete b.player1Id
             }
 
             //Player 2
             if(p2.morale<=0){
-                messages.push({ text: p2.name+' was driven insane by '+p1.name})
+                messages.push({ text: p2.name+' was driven insane by '+p1.name+'!'})
                 deletedPlayerIds.push(b.player2Id as string)
                 delete b.player2Id
             }
@@ -115,7 +119,7 @@ const resolveBrackets = async (brackets:Array<Bracket>, players:Array<PlayerStat
                 }
             }
             else if(p2.capital >= 10 && p2.capital > p1.capital){
-                messages.push({ text: p2.name+' bought out '+p1.name})
+                messages.push({ text: p2.name+' bought out '+p1.name+'!'})
                 deletedPlayerIds.push(b.player2Id as string)
                 delete b.player2Id
             }
@@ -384,7 +388,7 @@ const getHighestEdict = async () => {
         votesHash[e+'_edict'].votes++
     })
     let leaderVotes = 0
-    let leaderEdict = ''
+    let leaderEdict = null
     for(let e in votesHash){
         if(votesHash[e].votes > leaderVotes){
             leaderVotes = votesHash[e].votes
@@ -396,7 +400,7 @@ const getHighestEdict = async () => {
         admin.firestore().collection(Schemas.Collections.User.collectionName).doc(player.uid).set({...player, votes: 0, pendingVote: null })
     }
 
-    return leaderEdict as Edict
+    return leaderEdict as any
 }
 
 export const onResolveCurrentBrackets = functions.pubsub.schedule('0 0 * * *').onRun(resolveCurrentBrackets)

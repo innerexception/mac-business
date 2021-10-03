@@ -55,12 +55,13 @@ export default class ViewscreenFrame extends React.Component<Props> {
                             )}
                         </div>
                         <div style={{width:'100%'}}>
-                            <h4>Messages</h4>
-                            {tourney.brackets.map(b=>b.messages).map(msg=>
+                            <h4 style={{marginBottom:'1em'}}>Messages</h4>
+                            {tourney.brackets.map(b=>b.messages).map((msg,i)=>
                                 <div>
-                                {msg.map(text=>
-                                    <div>{text.text}</div>    
-                                )}
+                                    <h6>Round {i+1}</h6>
+                                    {msg.map(text=>
+                                        <div>{text.text}</div>    
+                                    )}
                                 </div>
                             )}
                         </div>
