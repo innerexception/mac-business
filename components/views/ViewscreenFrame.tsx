@@ -38,6 +38,10 @@ export default class ViewscreenFrame extends React.Component<Props> {
                     {tourney ? 
                     <div style={{display:'flex', flexDirection:'column', alignItems:'center', margin:'1em', width:'100%'}}>
                         {this.props.me?.employer != undefined ? <div style={{marginBottom:'1em'}}>{this.props.me.name} Personal Portal c2034 {Corporations[this.props.me.employer].name}</div> : <div style={{marginBottom:'1em'}}>Employee Personal Portal (Spectator)</div>}
+                        {tourney.hasStarted ?
+                            <div>Next round locks in {10-new Date(Date.now()-tourney.lastCheck).getMinutes()} min</div> :
+                            <div>Next Tournament in {10-new Date(Date.now()-tourney.lastCheck).getMinutes()} min</div>
+                        }
                         {tourney.isVoting && <Voting/>}
                         {!this.props.me?.tournamentId && !tourney.hasStarted && Button(true, ()=>onShowModal(Modal.CHOOSE_EMPLOYMENT), 'Join Tournament')}
                         <div style={{display:'flex', marginTop:'1em', width:'100%'}}>

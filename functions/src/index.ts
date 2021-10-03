@@ -50,7 +50,7 @@ const resolveCurrentBrackets = async (context:EventContext) => {
     }
     else {
         //else, check if there are enough players to start a tournament
-        if(tourney.brackets.length >= 4){
+        if(tourney.brackets.length >= 2){
             //if so, start it
             await updateTournament({...tourney, hasStarted:true})
         }
