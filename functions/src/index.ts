@@ -4,7 +4,7 @@ import { EventContext } from "firebase-functions";
 import { CallableContext } from "firebase-functions/v1/https";
 import {Schemas} from '../../firebase/Schemas'
 import { v4 } from "uuid";
-import { Ability, Corporations } from "../../enum";
+import { Ability, Corporations, Edict } from "../../enum";
 import { Abilities } from "./Abilities";
 
 admin.initializeApp()
@@ -20,6 +20,18 @@ const resolveCurrentBrackets = async (context:EventContext) => {
     if(tourney.hasStarted){
         //if there is an active tournament, calculate all brackets and advance/remove players
         const players = await getPlayers()
+        if(tourney.isVoting){
+            //end it and save voting result
+            let votedModifier = await getHighestEdict()
+            if(votedModifier) await admin.firestore().collection(Schemas.Collections.Edicts.collectionName).doc(votedModifier.toString()).set({active: true})
+            const newTourney = getNewTournament()
+            let active = players.filter(p=>p.tournamentId)
+            for(let pl of active){
+                await updatePlayer({...pl, tournamentId: ''})
+            }
+            await updateTournament(newTourney)
+            return
+        }
         const brackets = await resolveBrackets(tourney.brackets, players, tourney.activeRound+1)
         const roundBrackets = brackets.filter(b=>b.round === tourney.activeRound+1)
         if(roundBrackets.length === 0){
@@ -30,16 +42,6 @@ const resolveCurrentBrackets = async (context:EventContext) => {
                 brackets,
                 lastCheck: Date.now()
             })
-        }
-        else if(tourney.isVoting){
-            //end it and save voting result
-            await updateTournament({
-                ...tourney, 
-                hasEnded: true,
-                lastCheck: Date.now()
-            })
-            let votedModifier = await getHighestEdict()
-            await admin.firestore().collection(Schemas.Collections.Edicts.collectionName).doc(votedModifier).set({active: true})
         }
         else {
             //else advance to next
@@ -371,25 +373,26 @@ const getNewTournament = ():Tournament => {
 }
 
 interface VotesHash {
-    [thing:number]:number
+    [thing:string]:{ votes: number, edict: Edict}
 }
 
 const getHighestEdict = async () => {
 
     let playersRef = await admin.firestore().collection(Schemas.Collections.User.collectionName).get()
-    const players = playersRef.docs.map(d=>d.data() as PlayerStats)
+    const players = playersRef.docs.map(d=>d.data() as PlayerStats).filter(p=>p.pendingVote)
 
-    let voteHash = {} as VotesHash
-    players.forEach(p=>{
-        if(!voteHash[p.pendingVote]) voteHash[p.pendingVote] = 0
-        else voteHash[p.pendingVote]+=p.votes
+    let edicts = players.map(p=>p.pendingVote)
+    let votesHash:VotesHash = {}
+    edicts.forEach(e=>{
+        if(!votesHash[e+'_edict']) votesHash[e+'_edict'] = { votes: 0, edict: e }
+        votesHash[e+'_edict'].votes++
     })
     let leaderVotes = 0
     let leaderEdict = null
-    for(let edict in voteHash){
-        if(voteHash[edict] > leaderVotes){
-            leaderVotes = voteHash[edict]
-            leaderEdict = edict
+    for(let e in votesHash){
+        if(votesHash[e].votes > leaderVotes){
+            leaderVotes = votesHash[e].votes
+            leaderEdict = votesHash[e].edict
         }
     }
 
