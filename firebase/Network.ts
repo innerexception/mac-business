@@ -1,5 +1,5 @@
 // This import loads the firebase namespace along with all its type information.
-import firebase from 'firebase';
+import firebase from 'firebase/app';
 import { firebaseConfig } from './firebase.config.js'
 // These imports load individual services into the firebase namespace.
 import 'firebase/auth';
@@ -31,11 +31,11 @@ class Network {
                 if(uref.exists){
                     userData = uref.data() as PlayerStats
                 }
-                else this.db.collection(Schemas.Collections.User.collectionName).doc(user.uid).set(userData)
+                else this.submitNewUser(userData)
                 const tourney = await this.getTournament()
                 if(tourney){
                     onJoinExisting(userData, tourney)
-                    this.subscribeToTourney(tourney.id, userData.uid)
+                    this.subscribeToTourney(userData.uid)
                 }
                 onLoginUser(userData)
             } else {
@@ -53,16 +53,11 @@ class Network {
         await this.auth.createUserWithEmailAndPassword(email, password)
     }
     
-    onUpdatePlayer = async (user:PlayerStats) => {
-        await this.db.collection(Schemas.Collections.User.collectionName).doc(user.uid).set(user)
-    }
-
     joinMatch = async (matchId:string, player:PlayerStats) => {
         let ref = await this.db.collection(Schemas.Collections.Tournaments.collectionName).doc(matchId).get()
         if(ref.exists){
-            let match = ref.data() as Tournament
             this.tryJoinTournament(player)
-            this.subscribeToTourney(match.id, player.uid)
+            this.subscribeToTourney(player.uid)
             onHideModal()
         }
     }
@@ -83,9 +78,9 @@ class Network {
         return ref.data() as PlayerStats
     }
 
-    subscribeToTourney = (id:string, playerId:string) => {
+    subscribeToTourney = (playerId:string) => {
         if(this.unsub) console.warn('uhh, already subscribed to a match??')
-        this.unsub = this.db.collection(Schemas.Collections.Tournaments.collectionName).doc(id)
+        this.unsub = this.db.collection(Schemas.Collections.Tournaments.collectionName).doc('thing1')
         .onSnapshot(
             (snap) => {
                 let match = snap.data() as Tournament
@@ -119,6 +114,10 @@ class Network {
     tryJoinTournament = async (params:PlayerStats) => {
        let res = await this.functions.httpsCallable(CloudFunctions.onTryPlayerJoin)(params)
        return res.data
+    }
+
+    submitNewUser = async (params:PlayerStats) => {
+        await this.functions.httpsCallable(CloudFunctions.onSubmitNewPlayer)(params)
     }
 
     onSubmitBuild = async (params:PlayerStats) => {

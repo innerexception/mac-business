@@ -276,6 +276,11 @@ const submitPlayerVote = async (params:PlayerVoteParams, ctx:CallableContext) =>
     }
 }
 
+const submitNewPlayer = async (params:PlayerStats, ctx:CallableContext) => {
+    if(ctx.auth)
+        await admin.firestore().collection(Schemas.Collections.User.collectionName).doc(ctx.auth.uid).set(params)
+}
+
 const getTournament = async () => {
     let ref = await admin.firestore().collection(Schemas.Collections.Tournaments.collectionName).doc('thing1').get()
     if(!ref.exists){
@@ -349,9 +354,10 @@ const getHighestEdict = async () => {
     return leaderEdict as Edict
 }
 
-export const onResolveCurrentBrackets = functions.pubsub.schedule('0/10 * * * *').onRun(resolveCurrentBrackets)
+export const onResolveCurrentBrackets = functions.pubsub.schedule('0 0 * * *').onRun(resolveCurrentBrackets)
 export const onTryPlayerJoin = functions.https.onCall(tryPlayerJoin)
 export const onPlayerLeave = functions.https.onCall(playerLeft)
 export const onSubmitPlayerBuild= functions.https.onCall(submitPlayerBuild)
 export const onSubmitPlayerWager= functions.https.onCall(submitPlayerWager)
 export const onSubmitPlayerVote= functions.https.onCall(submitPlayerVote)
+export const onSubmitNewPlayer=functions.https.onCall(submitNewPlayer)

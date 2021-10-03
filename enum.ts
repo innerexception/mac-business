@@ -22,7 +22,8 @@ export enum CloudFunctions {
     onPlayerLeave='onPlayerLeave',
     onSubmitPlayerBuild='onSubmitPlayerBuild',
     onSubmitPlayerWager='onSubmitPlayerWager',
-    onSubmitPlayerVote='onSubmitPlayerVote'
+    onSubmitPlayerVote='onSubmitPlayerVote',
+    onSubmitNewPlayer='onSubmitNewPlayer'
 }
 
 export enum Edict {
@@ -127,7 +128,6 @@ export enum Modal {
     HELP,
     MENU,
     SCORES,
-    LOBBY,
     INFO,
     EDIT_BUILD,
     CHOOSE_EMPLOYMENT

@@ -4,10 +4,10 @@ import { createStore, applyMiddleware } from 'redux'
 import { Provider } from 'react-redux'
 import appReducer from './components/uiManager/UIManagerReducer';
 import AppContainer from './components/uiManager/AppContainer';
-const thunkMiddleware = require('redux-thunk')
+import thunk from 'redux-thunk'
 
 export const store = createStore(appReducer, applyMiddleware(
-    thunkMiddleware // lets us dispatch() functions
+    thunk // lets us dispatch() functions
 ))
 
 export const dispatch = store.dispatch

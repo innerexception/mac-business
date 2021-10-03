@@ -56,7 +56,6 @@ export const onTournamentUpdated = (match:Tournament) => {
 }
 
 export const onUpdatePlayer = (player:PlayerStats) => {
-    Provider.onUpdatePlayer(player)
     dispatch({
         type: UIReducerActions.UPDATE_PLAYER,
         player
