@@ -84,7 +84,16 @@ export const Corporations:Record<Corporation, CorpoData> = {
         name: 'Elysium Medical Group',
         morale: 10,
         capital: 0,
-        soul: 10
+        soul: 10,
+        left:'-12%',
+        logo: `
+        ███████╗███╗   ███╗ ██████╗ 
+        ██╔════╝████╗ ████║██╔════╝ 
+        █████╗  ██╔████╔██║██║  ███╗
+        ██╔══╝  ██║╚██╔╝██║██║   ██║
+        ███████╗██║ ╚═╝ ██║╚██████╔╝
+        ╚══════╝╚═╝     ╚═╝ ╚═════╝ 
+        `
     },
     [Corporation.HellBank]: {
         color:'0xff0000',
@@ -92,7 +101,18 @@ export const Corporations:Record<Corporation, CorpoData> = {
         description: 'Got cash? Not for long!',
         morale: 10,
         capital: -5,
-        soul: 10
+        soul: 10,
+        left:'-10%',
+        logo: `
+        $$\   $$\ $$$$$$$$\ $$$$$$$\  
+        $$ |  $$ |$$  _____|$$  __$$\ 
+        $$ |  $$ |$$ |      $$ |  $$ |
+        $$$$$$$$ |$$$$$\    $$$$$$$\ |
+        $$  __$$ |$$  __|   $$  __$$\ 
+        $$ |  $$ |$$ |      $$ |  $$ |
+        $$ |  $$ |$$ |      $$$$$$$  |
+        \__|  \__|\__|      \_______/      
+        `
     },
     [Corporation.McKillsie]: {
         color:'0xcccccc',
@@ -100,7 +120,17 @@ export const Corporations:Record<Corporation, CorpoData> = {
         name: 'McKillsie Consulting',
         morale: 10,
         capital: 0,
-        soul: 10
+        soul: 10,
+        left:'-10%',
+        logo: `
+        :::   :::                      :::    :::             
+      :+:+: :+:+:                     :+:   :+:               
+    +:+ +:+:+ +:+                    +:+  +:+                 
+   +#+  +:+  +#+                    +#++:++                   
+  +#+       +#+                    +#+  +#+                   
+ #+#       #+#        #+#         #+#   #+#           #+#     
+###       ###        ###         ###    ###          ###      
+        `
     },
     [Corporation.PardonPharma]: {
         color:'0xff00ff',
@@ -108,7 +138,17 @@ export const Corporations:Record<Corporation, CorpoData> = {
         description: 'Like if El Chapo had lobbyists.',
         morale: 10,
         capital: 0,
-        soul: 20
+        soul: 20,
+        left:'-10%',
+        logo: `
+ ____   ____ ____  ___    ___  ____  
+ |    \ /    |    \|   \  /   \|    \ 
+ |  o  )  o  |  D  )    \|     |  _  |
+ |   _/|     |    /|  D  |  O  |  |  |
+ |  |  |  _  |    \|     |     |  |  |
+ |  |  |  |  |  .  \     |     |  |  |
+ |__|  |__|__|__|\_|_____|\___/|__|__|
+        `
     },
     [Corporation.Rontheon]: {
         color:'0xff0000',
@@ -116,7 +156,15 @@ export const Corporations:Record<Corporation, CorpoData> = {
         description: 'A proven track record of turning successful countries and individuals into smoking heaps of gory ash.',
         morale: 10,
         capital: 0,
-        soul: 10
+        soul: 10,
+        left:'-25%',
+        logo: `                                                     
+    //   ) )                                                            
+    //___/ /   ___       __   __  ___ / __      ___      ___       __    
+   / ___ (   //   ) ) //   ) ) / /   //   ) ) //___) ) //   ) ) //   ) ) 
+  //   | |  //   / / //   / / / /   //   / / //       //   / / //   / /  
+ //    | | ((___/ / //   / / / /   //   / / ((____   ((___/ / //   / /   
+        `
     },
     [Corporation.Wernstern]: {
         color:'0x00ff00',
@@ -124,7 +172,16 @@ export const Corporations:Record<Corporation, CorpoData> = {
         description: 'If you read it, we wrote it.',
         morale: 5,
         capital: 0,
-        soul: 10
+        soul: 10,
+        left:'-40%',
+        width:'340px',
+        logo: `
+ _|          _|                                            _|                                    
+ _|          _|    _|_|    _|  _|_|  _|_|_|      _|_|_|  _|_|_|_|    _|_|    _|  _|_|  _|_|_|    
+ _|    _|    _|  _|_|_|_|  _|_|      _|    _|  _|_|        _|      _|_|_|_|  _|_|      _|    _|  
+   _|  _|  _|    _|        _|        _|    _|      _|_|    _|      _|        _|        _|    _|  
+     _|  _|        _|_|_|  _|        _|    _|  _|_|_|        _|_|    _|_|_|  _|        _|    _|  
+        `
     },
 }
 

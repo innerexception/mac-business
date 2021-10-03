@@ -54,28 +54,37 @@ export default class BuildEdit extends React.PureComponent<Props, State> {
         const build = this.state.build
         const abils = Object.keys(Abilities).filter((a:Ability)=>Abilities[a].corp === this.props.me.employer).map((a:Ability)=>Abilities[a])
         return (
-            <div>
-                <div>
-                    {build.map((b,i)=>
-                        <Tooltip overlay={<AbilityTooltip ability={b}/>} placement="bottom">
-                            <div style={{display:'flex'}}>
-                                <h5>{i+1}</h5>
-                                <h5>{b.name}</h5>
-                                {Button(i > 0, ()=>this.onMoveUp(i), 'up')}
-                                {Button(i < this.state.build.length-1, ()=>this.onMoveDown(i), 'down')}
-                                {Button(true, ()=>this.onRemove(i), 'x')}
+            <div style={{...AppStyles.modal, ...AppStyles.centered}}>
+                <div style={{display:'flex'}}>
+                    <div style={{width:'300px', marginRight:'1em'}}>
+                        <h5 style={{marginBottom:'0.5em'}}>Employer Perks</h5>
+                        {abils.map(a=>
+                            <div style={{display:'flex', alignItems:'center', marginBottom:'0.5em'}}>
+                                {Button(this.state.build.length < 3, ()=>this.addNew(a), '+')}
+                                <Tooltip overlay={<AbilityTooltip ability={a}/>} placement='bottom'>
+                                    <h5 style={{marginLeft:'0.5em'}}>{a.name}</h5>
+                                </Tooltip>
                             </div>
-                        </Tooltip>
-                    )}
-                </div>
-                <div>
-                    {abils.map(a=>
-                        <div>
-                            <h5>{a.name}</h5>
-                            <h6>{a.description}</h6>
-                            {Button(true, ()=>this.addNew(a), '+')}
-                        </div>
-                    )}
+                        )}
+                    </div>
+                    <div style={{width:'300px'}}>
+                        <h5 style={{marginBottom:'0.5em'}}>Your Action Plan (max 3)</h5>
+                        {build.map((b,i)=>
+                            <Tooltip overlay={<AbilityTooltip ability={b}/>} placement="bottom">
+                                <div>
+                                    <div style={{display:'flex'}}>
+                                        <h5 style={{marginRight:'0.5em'}}>{i+1}</h5>
+                                        <h5>{b.name}</h5>
+                                    </div>
+                                    <div style={{display:'flex'}}>
+                                        {Button(i > 0, ()=>this.onMoveUp(i), '+')}
+                                        {Button(i < this.state.build.length-1, ()=>this.onMoveDown(i), '-')}
+                                        {Button(true, ()=>this.onRemove(i), 'x')}
+                                    </div>
+                                </div>
+                            </Tooltip>
+                        )}
+                    </div>
                 </div>
                 {Button(true, ()=>{Provider.onSubmitBuild({...this.props.me, build: this.state.build});onHideModal()}, 'Lock In')}
             </div>

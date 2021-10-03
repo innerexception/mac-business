@@ -36,21 +36,21 @@ export default class ViewscreenFrame extends React.Component<Props> {
                 <div style={{position:'relative', display:'flex', justifyContent:'center', borderRadius:'5px', margin:'1px', width:'100%', height:'100%', overflow:'auto'}}>
                     {this.props.modalState && this.getModal()}
                     {tourney ? 
-                    <div style={{display:'flex', flexDirection:'column', alignItems:'center', marginTop:'1em'}}>
+                    <div style={{display:'flex', flexDirection:'column', alignItems:'center', margin:'1em', width:'100%'}}>
+                        {this.props.me?.employer != undefined ? <div style={{marginBottom:'1em'}}>{this.props.me.name} Personal Portal c2034 {Corporations[this.props.me.employer].name}</div> : <div style={{marginBottom:'1em'}}>Employee Personal Portal (Spectator)</div>}
                         {tourney.isVoting && <Voting/>}
                         {!this.props.me?.tournamentId && !tourney.hasStarted && Button(true, ()=>onShowModal(Modal.CHOOSE_EMPLOYMENT), 'Join Tournament')}
-                        <div style={{display:'flex', marginTop:'1em'}}>
+                        <div style={{display:'flex', marginTop:'1em', width:'100%'}}>
                             {new Array(tourney.activeRound).fill({}).map((b,i)=>
-                            <div style={{width:'100px', textAlign:'center'}}>Round {i+1}</div>
+                            <div style={{width:'200px', textAlign:'center'}}>Round {i+1}</div>
                             )}
                         </div>
-                        <div style={{overflow:'auto', height:'55vh'}}>
+                        <div style={{overflow:'auto', maxHeight:'85vh', width:'100%'}}>
                             {new Array(tourney.activeRound).fill({}).map((b,i)=>
-                            <div style={{width:'100px'}}><BracketView round={i+1}/></div>
+                            <div style={{width:'200px'}}><BracketView round={i+1}/></div>
                             )}
                         </div>
                     </div> : <div>Connecting...</div>}
-                    {this.props.me?.employer && <div>Employee Personal Portal ©2034 {Corporations[this.props.me.employer].name}</div>}
                 </div> 
             )
     }

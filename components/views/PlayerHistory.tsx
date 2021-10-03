@@ -7,7 +7,8 @@ interface Props {
 
 export default (props:Props) => 
     <div>
-        {props.history.map((h,i)=>
+        {props.history.length ? 
+        props.history.map((h,i)=>
             <div>
                 <h5>Round {i}</h5>
                 {h.abilities.map((a,i)=>
@@ -15,8 +16,9 @@ export default (props:Props) =>
                     <div>{i} - {a.name}</div>
                 </Tooltip>
                 )}
-            </div>
-        )}
+        </div>) :
+        <h6>No wins yet...</h6>
+        }
     </div>
         
 interface TipProps {

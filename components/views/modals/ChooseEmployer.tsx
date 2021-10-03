@@ -12,6 +12,7 @@ interface Props {
 
 interface State {
     selectedIndex:number
+    name:string
 }
 
 @(connect((state: RState) => ({
@@ -21,7 +22,8 @@ interface State {
 export default class ChooseEmployer extends React.PureComponent<Props, State> {
 
     state:State = {
-        selectedIndex: 0
+        selectedIndex: 0,
+        name:this.props.me.name || 'New Employee'
     }
 
     increment = () => {
@@ -29,7 +31,7 @@ export default class ChooseEmployer extends React.PureComponent<Props, State> {
     }
 
     tryJoin = async (employer:Corporation) => {
-        let success = await Provider.tryJoinTournament({...this.props.me, employer }); 
+        let success = await Provider.tryJoinTournament({...this.props.me, employer, name:this.state.name }); 
         if(success) onHideModal()
     }
 
@@ -39,9 +41,15 @@ export default class ChooseEmployer extends React.PureComponent<Props, State> {
         return (
             <div style={{...AppStyles.modal, ...AppStyles.centered}}>
                 <div style={{backgroundColor:data.color}}>
+                    <div>
+                        <h6 style={{whiteSpace:'pre-wrap', fontSize:'6px'}}>{data.logo}</h6>
+                    </div>
                     <h5>{data.name}</h5>
                     <h6>{data.description}</h6>
                     {Button(true, this.increment, 'Next ->')}
+                </div>
+                <div>
+                    <input value={this.state.name} onChange={(e)=>this.setState({name:e.currentTarget.value})}/>
                 </div>
                 <div style={{display:"flex"}}>
                     {Button(true, ()=>this.tryJoin(employer), 'Sign Handbook (in blood)')}

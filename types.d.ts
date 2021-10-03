@@ -77,6 +77,9 @@ interface CorpoData {
     soul:number
     morale:number
     capital:number
+    logo:string,
+    left:string,
+    width?:string
 }
 
 interface ModalState { modal: import('./enum').Modal, data?: any }

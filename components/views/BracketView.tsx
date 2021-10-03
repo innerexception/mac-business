@@ -35,7 +35,7 @@ export default class BracketView extends React.PureComponent<Props, State> {
                     {!isParticipant && b.player1Id &&
                     <div>
                         {NumericInput(this.state.wager, (val)=>this.setState({wager: val}), this.props.me.votes, 0)}
-                        {Button(true, ()=>Provider.onSubmitWager({ amount: this.state.wager, bracketId: b.uid, playerToWin: b.player1Id}), 'Wager')}
+                        {Button(true, ()=>Provider.onSubmitWager({ amount: this.state.wager, bracketId: b.uid, playerToWin: b.player1Id}), 'Place Bet')}
                     </div>
                     }
                     <h5 style={{textAlign:'center', margin:'0.5em'}}>VS</h5>
@@ -43,7 +43,7 @@ export default class BracketView extends React.PureComponent<Props, State> {
                     {!isParticipant && b.player2Id &&
                     <div>
                         {NumericInput(this.state.wager, (val)=>this.setState({wager: val}), this.props.me.votes, 0)}
-                        {Button(true, ()=>Provider.onSubmitWager({ amount: this.state.wager, bracketId: b.uid, playerToWin: b.player2Id}), 'Wager')}
+                        {Button(true, ()=>Provider.onSubmitWager({ amount: this.state.wager, bracketId: b.uid, playerToWin: b.player2Id}), 'Place Bet')}
                     </div>
                     }
                 </div>
