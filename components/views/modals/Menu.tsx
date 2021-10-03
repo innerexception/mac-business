@@ -13,6 +13,12 @@ interface State {
     error:string
 }
 
+const intro = [
+    "Welcome to our family. We are so excited to meat you, and hope you are ready to participate in the global Soul Harvest team building tournament!",
+    "As you know, in today's marketplace we need the help of our extra dimensional friends to keep meeting our numbers!",
+    "We hope you will do your best to represent the values our company represents and be your best and most authentic self!"
+]
+
 export default class Menu extends React.Component<Props, State> {
 
     state = { isLogginIn: false, error: '' }
@@ -30,14 +36,13 @@ export default class Menu extends React.Component<Props, State> {
     render(){
         return (
             <div style={{...AppStyles.modal, ...AppStyles.centered}}>
-                <div>
-                    <h1><Dialog messages={['Most']}/></h1>
-                    <h1 style={{marginLeft:'1em'}}><Dialog messages={['Extreme']}/></h1>
-                    <h1 style={{marginLeft:'2em'}}><Dialog messages={['Danger!!']}/></h1>
+                <div style={{height:'400px', display:'flex', flexDirection:'column', justifyContent:'space-between'}}>
+                    <h2 style={{textAlign:'center'}}>Welcome new Employee!!</h2>
+                    <h6 style={{margin:'2em'}}><Dialog messages={intro}/></h6>
                     {this.state.error && <h4 style={{color:'white'}}>{this.state.error}</h4>}
                     <div>
                         <div style={{display:'flex', justifyContent:'center', marginTop:'0.5em'}}>
-                            <div style={{width:'100px', marginLeft:'1em'}}>{Button(!this.state.isLogginIn, this.trySignIn, 'Continue')}</div>
+                            <div>{Button(!this.state.isLogginIn, this.trySignIn, 'Accept Terms')}</div>
                         </div>
                     </div>
                 </div>

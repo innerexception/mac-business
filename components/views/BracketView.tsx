@@ -25,23 +25,23 @@ export default class BracketView extends React.PureComponent<Props, State> {
 
     render(){
         const brackets = this.props.match.brackets.filter(b=>b.round === this.props.round)
-        const isParticipant = this.props.me.tournamentId === this.props.match.id
+        if(!this.props.me) return <span/>
+        const isParticipant = this.props.me?.tournamentId === this.props.match.id
         return (
             <div>
                 {brackets.map(b=>
-                <div>
+                <div style={{padding:'5px', border:'1px '+(this.props.round === this.props.match.activeRound ? 'dashed':'solid'), marginBottom:'1em'}}>
                     <Bracket playerId={b.player1Id} myId={this.props.me.uid}/>
                     {!isParticipant && b.player1Id &&
                     <div>
-                        <h5>Wager</h5>
                         {NumericInput(this.state.wager, (val)=>this.setState({wager: val}), this.props.me.votes, 0)}
                         {Button(true, ()=>Provider.onSubmitWager({ amount: this.state.wager, bracketId: b.uid, playerToWin: b.player1Id}), 'Wager')}
                     </div>
                     }
+                    <h5 style={{textAlign:'center', margin:'0.5em'}}>VS</h5>
                     <Bracket playerId={b.player2Id} myId={this.props.me.uid}/>
                     {!isParticipant && b.player2Id &&
                     <div>
-                        <h5>Wager</h5>
                         {NumericInput(this.state.wager, (val)=>this.setState({wager: val}), this.props.me.votes, 0)}
                         {Button(true, ()=>Provider.onSubmitWager({ amount: this.state.wager, bracketId: b.uid, playerToWin: b.player2Id}), 'Wager')}
                     </div>

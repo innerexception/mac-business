@@ -1,9 +1,17 @@
 export const colors = {
-    white: '#f3f3f3',
-    grey1: '#d5d5d5',
-    grey2: '#b3b3b3',
-    grey3:'#5f5f5f',
-    black:'#252525'
+    white: '#ffffff',
+    grey: '#AAAAAA',
+    darkgrey: '#555555',
+    blue: '#5555FF',
+    darkblue:'#0000AA',
+    green:'#55FF55',
+    darkgreen:'#00AA00',
+    red:'#FF5555',
+    darkred: '#AA0000',
+    yellow:'#FFFF55',
+    black:'#000000',
+    purple:'#FF55FF',
+    brown:'#AA5500'
 }
 
 export default {
@@ -13,21 +21,19 @@ export default {
         border: '1px solid'
     },
     buttonOuter: {
-        color: '#252525', 
         cursor:'pointer',
         textAlign:'center' as 'center',
         border: '3px solid',
-        borderRadius: '5px',
-        background:'white',
+        background:colors.black,
         width:'50%',
         marginLeft:'calc(50% - 0.5em)',
         padding:'2px'
     },
     buttonInner: {
-        border:'1px solid', borderRadius: '3px', paddingLeft:'5px', paddingRight:'5px' ,
-        color: '#252525', 
-        background:'white',
-        cursor:'pointer'
+        border:'1px solid', paddingLeft:'5px', paddingRight:'5px' ,
+        background:'black',
+        cursor:'pointer',
+        textAlign:'center' as 'center',
     },
     topBar: {
         background: 'white',
@@ -55,8 +61,7 @@ export default {
         justifyContent: 'space-between',
         zIndex:2,
         padding:'10px',
-        border: '7px double white',
-        color:'orange',
+        border: '7px double '+colors.green,
         top:'7em',
         left:'7em'
     },

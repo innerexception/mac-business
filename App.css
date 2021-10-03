@@ -1,6 +1,6 @@
 @font-face {
   font-family: 'Body';
-  src: url('./assets/VCR_OSD_MONO_1.001.ttf')  format('truetype')
+  src: url('./assets/DOS.ttf')  format('truetype')
 }
 
 @font-face {
@@ -24,7 +24,7 @@ body {
   image-rendering: pixelated;
   -webkit-font-smoothing: none;
   background: black;
-  color:white;
+  color:#55FF55;
 }
 
 h1,h2,h3,h4,h5,h6{

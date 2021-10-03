@@ -3,6 +3,7 @@ import { Button, TopBar } from '../../Shared';
 import Provider from '../../../firebase/Network';
 import { Edict, Edicts } from '../../../enum';
 import { connect } from 'react-redux';
+import AppStyles from '../../../AppStyles';
 
 interface Props {
     me?:PlayerStats
@@ -15,7 +16,7 @@ export default class Voting extends React.PureComponent<Props> {
 
     render(){
         return (
-            <div>
+            <div style={{...AppStyles.modal, ...AppStyles.centered}}>
                 <h4>Your votes: {this.props.me.votes}</h4>
                 {Object.keys(Edict).map((e:Edict)=>
                     <div style={{width:'100px'}}>

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Modal } from '../../enum';
+import { Corporations, Modal } from '../../enum';
 import Menu from './modals/Menu';
 import { connect } from 'react-redux';
 import { Button } from '../Shared';
@@ -34,12 +34,12 @@ export default class ViewscreenFrame extends React.Component<Props> {
             const tourney = this.props.tournament
             return (
                 <div style={{position:'relative', display:'flex', justifyContent:'center', borderRadius:'5px', margin:'1px', width:'100%', height:'100%', overflow:'auto'}}>
-                    {this.props.modalState && <div style={{position:'absolute', top:0, left:0}}>{this.getModal()}</div>}
+                    {this.props.modalState && this.getModal()}
                     {tourney ? 
-                    <div>
-                        {tourney.isVoting && <div style={{position:'absolute', top:0, left:0}}><Voting/></div>}
+                    <div style={{display:'flex', flexDirection:'column', alignItems:'center', marginTop:'1em'}}>
+                        {tourney.isVoting && <Voting/>}
                         {!this.props.me?.tournamentId && !tourney.hasStarted && Button(true, ()=>onShowModal(Modal.CHOOSE_EMPLOYMENT), 'Join Tournament')}
-                        <div style={{display:'flex'}}>
+                        <div style={{display:'flex', marginTop:'1em'}}>
                             {new Array(tourney.activeRound).fill({}).map((b,i)=>
                             <div style={{width:'100px', textAlign:'center'}}>Round {i+1}</div>
                             )}
@@ -49,8 +49,8 @@ export default class ViewscreenFrame extends React.Component<Props> {
                             <div style={{width:'100px'}}><BracketView round={i+1}/></div>
                             )}
                         </div>
-                    </div> : 
-                    <div>Loading...</div>}
+                    </div> : <div>Connecting...</div>}
+                    {this.props.me?.employer && <div>Employee Personal Portal ©2034 {Corporations[this.props.me.employer].name}</div>}
                 </div> 
             )
     }

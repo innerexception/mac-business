@@ -16,9 +16,17 @@ export default class Dialog extends React.Component<Props> {
     renderNextLetter = ()=> {
         if(this.state.textLength < this.props.messages[this.state.currentStringIndex].length){
             this.setState({textLength: this.state.textLength+1})
-            setTimeout(this.renderNextLetter, 85)
+            setTimeout(this.renderNextLetter, 65)
         }
-        else this.props.onStartTimer && this.props.onStartTimer()
+        else{
+            let nextI = this.state.currentStringIndex+1
+            if(this.props.messages[nextI]){
+                setTimeout(()=>{
+                    this.setState({currentStringIndex: this.state.currentStringIndex+1, textLength: 0})
+                    this.renderNextLetter()
+                }, 1000)
+            }
+        } 
     }
 
     render(){

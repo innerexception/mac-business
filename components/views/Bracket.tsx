@@ -43,4 +43,4 @@ export default class Bracket extends React.PureComponent<Props, State> {
     }
 }
 
-export const Avatar = (avatarIndex:number) => <span style={{fontFamily:'avatar', paddingLeft:'5px', paddingTop:'4px', color:'orange'}}>{Avatars[avatarIndex]}</span>
+export const Avatar = (avatarIndex:number) => <span style={{fontFamily:'avatar', color:'orange'}}>{Avatars[avatarIndex]}</span>

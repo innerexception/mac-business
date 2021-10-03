@@ -4,6 +4,7 @@ import Provider from '../../../firebase/Network';
 import { Corporations, Corporation, Corpos } from '../../../enum';
 import { onHideModal } from '../../uiManager/Thunks';
 import { connect } from 'react-redux';
+import AppStyles from '../../../AppStyles';
 
 interface Props {
     me?:PlayerStats
@@ -36,13 +37,16 @@ export default class ChooseEmployer extends React.PureComponent<Props, State> {
         const employer = Corpos[this.state.selectedIndex] as Corporation
         const data = Corporations[employer] as CorpoData
         return (
-            <div>
+            <div style={{...AppStyles.modal, ...AppStyles.centered}}>
                 <div style={{backgroundColor:data.color}}>
                     <h5>{data.name}</h5>
                     <h6>{data.description}</h6>
-                    {Button(true, ()=>this.tryJoin(employer), 'Sign Handbook (in blood)')}
+                    {Button(true, this.increment, 'Next ->')}
                 </div>
-                {Button(true, this.increment, '->')}
+                <div style={{display:"flex"}}>
+                    {Button(true, ()=>this.tryJoin(employer), 'Sign Handbook (in blood)')}
+                    {Button(true, onHideModal, 'Nevermind')}
+                </div>
             </div>
         )
     }
