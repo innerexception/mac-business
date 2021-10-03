@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Button, TopBar } from '../../Shared';
 import Provider from '../../../firebase/Network';
-import { Corporations, Corporation } from '../../../enum';
+import { Corporations, Corporation, Corpos } from '../../../enum';
 import { onHideModal } from '../../uiManager/Thunks';
 import { connect } from 'react-redux';
 
@@ -24,7 +24,7 @@ export default class ChooseEmployer extends React.PureComponent<Props, State> {
     }
 
     increment = () => {
-        this.setState({selectedIndex: this.state.selectedIndex + 1 % Object.keys(Corporation).length})
+        this.setState({selectedIndex: (this.state.selectedIndex + 1) % Corpos.length})
     }
 
     tryJoin = async (employer:Corporation) => {
@@ -33,7 +33,7 @@ export default class ChooseEmployer extends React.PureComponent<Props, State> {
     }
 
     render(){
-        const employer = Object.keys(Corporation)[this.state.selectedIndex] as Corporation
+        const employer = Corpos[this.state.selectedIndex] as Corporation
         const data = Corporations[employer] as CorpoData
         return (
             <div>

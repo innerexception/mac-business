@@ -38,13 +38,15 @@ export const Edicts:Record<Edict, EdictData> = {
 }
 
 export enum Corporation {
-    Wernstern='Wernstern Media',
-    Rontheon='Rontheon Arma',
-    HellBank='Hells Fargo Bank',
-    McKillsie='McKillsie Consulting',
-    Elysium='Elysium Medical Group',
-    PardonPharma='PardonPharma'
+    Wernstern,
+    Rontheon,
+    HellBank,
+    McKillsie,
+    Elysium,
+    PardonPharma
 }
+
+export const Corpos:Array<Corporation> = [Corporation.Elysium,Corporation.HellBank, Corporation.McKillsie, Corporation.PardonPharma, Corporation.Rontheon, Corporation.Wernstern]
 
 export enum Ability {
     Tweet='Cursed Tweet',
@@ -70,7 +72,9 @@ export enum Ability {
     OxyCalm='OxyCalm',
     PowerThirst='PowerThirst',
     InfinitePatents='Infinite Patents',
-    DickPill='DickPill'
+    DickPill='DickPill',
+    OrganDRM='Organ DRM',
+    LicensingGuild='Licensing Guild'
 }
 
 export const Corporations:Record<Corporation, CorpoData> = {

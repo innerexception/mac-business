@@ -64,7 +64,7 @@ const resolveCurrentBrackets = async (context:EventContext) => {
 const resolveBrackets = (brackets:Array<Bracket>, players:Array<PlayerStats>, nextRound:number) => {
 
     let messages = []
-
+    let deletedPlayerIds = new Array<string>()
     brackets.forEach(b=>{
         //1. Resolve each bracket
         //TODO: Apply edicts as appropriate
@@ -80,33 +80,41 @@ const resolveBrackets = (brackets:Array<Bracket>, players:Array<PlayerStats>, ne
             //Player 1
             if(p1.morale<=0 ){
                 messages.push({ text: p1.name+' was driven insane by '+p2.name})
+                deletedPlayerIds.push(b.player1Id as string)
                 delete b.player1Id
             }
             else if(p1.soul <= 0){
                 //3. Check for devouring
                 if(Math.random() <= 0.1 + Math.abs(0.1*p1.soul)){
                     messages.push({ text: p1.name+' was devoured!'})
+                    deletedPlayerIds.push(b.player1Id as string)
                     delete b.player1Id
                 }
             }
             else if(p1.capital >= 10 && p1.capital > p2.capital){
                 messages.push({ text: p1.name+' bought out '+p2.name})
+                deletedPlayerIds.push(b.player1Id as string)
+                delete b.player1Id
             }
 
             //Player 2
             if(p2.morale<=0){
                 messages.push({ text: p2.name+' was driven insane by '+p1.name})
+                deletedPlayerIds.push(b.player2Id as string)
                 delete b.player2Id
             }
             else if(p2.soul <= 0){ 
                 //3. Check for devouring
                 if(Math.random() <= 0.1 + Math.abs(0.1*p2.soul)){
                     messages.push({ text: p2.name+' was devoured!'})
+                    deletedPlayerIds.push(b.player2Id as string)
                     delete b.player2Id
                 }
             }
             else if(p2.capital >= 10 && p2.capital > p1.capital){
                 messages.push({ text: p2.name+' bought out '+p1.name})
+                deletedPlayerIds.push(b.player2Id as string)
+                delete b.player2Id
             }
 
             let winnerId=''
@@ -137,6 +145,7 @@ const resolveBrackets = (brackets:Array<Bracket>, players:Array<PlayerStats>, ne
 
     //Save updated player info
     for(let player of players){
+        if(deletedPlayerIds.includes(player.uid)) player.tournamentId = ''
         admin.firestore().collection(Schemas.Collections.User.collectionName).doc(player.uid).set(player)
     }
 
@@ -226,7 +235,7 @@ const tryPlayerJoin = async (params:PlayerStats, ctx:CallableContext) => {
         else {
             tourney.brackets.push({
                 uid: v4(),
-                round: 0,
+                round: 1,
                 odds: 1, //TODO: varies by player win ratio difference
                 player1Id: newPlayer.uid
             })
@@ -240,12 +249,21 @@ const playerLeft = async (params:{playerId:string}, ctx:CallableContext) => {
     //remove player from tournament if it has not yet started. Remove the bracket if empty. Otherwise do nothing.
     let tourney = await getTournament()
     if(!tourney.hasStarted){
+        let deletedId = ''
         tourney.brackets.forEach(b=>{
-            if(b.player1Id === params.playerId) delete b.player1Id
-            if(b.player2Id === params.playerId) delete b.player2Id
+            if(b.player1Id === params.playerId){
+                deletedId = b.player1Id
+                delete b.player1Id
+            } 
+            if(b.player2Id === params.playerId){
+                deletedId = b.player2Id
+                delete b.player2Id
+            } 
         })
         tourney.brackets = tourney.brackets.filter(b=>b.player1Id || b.player2Id)
         await updateTournament(tourney)
+        let pl = await getPlayer(deletedId)
+        if(pl) await updatePlayer({ ...pl, tournamentId:'' })
     }
 }
 
@@ -315,7 +333,7 @@ const updatePlayer = async (player:PlayerStats) => {
 const getNewTournament = ():Tournament => {
     return {
         id:v4(),
-        activeRound: 0,
+        activeRound: 1,
         brackets: [],
         hasStarted:false,
         hasEnded:false,

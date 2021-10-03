@@ -31,7 +31,7 @@ export default class BracketView extends React.PureComponent<Props, State> {
                 {brackets.map(b=>
                 <div>
                     <Bracket playerId={b.player1Id} myId={this.props.me.uid}/>
-                    {!isParticipant && 
+                    {!isParticipant && b.player1Id &&
                     <div>
                         <h5>Wager</h5>
                         {NumericInput(this.state.wager, (val)=>this.setState({wager: val}), this.props.me.votes, 0)}
@@ -39,7 +39,7 @@ export default class BracketView extends React.PureComponent<Props, State> {
                     </div>
                     }
                     <Bracket playerId={b.player2Id} myId={this.props.me.uid}/>
-                    {!isParticipant && 
+                    {!isParticipant && b.player2Id &&
                     <div>
                         <h5>Wager</h5>
                         {NumericInput(this.state.wager, (val)=>this.setState({wager: val}), this.props.me.votes, 0)}

@@ -33,20 +33,20 @@ export default class ViewscreenFrame extends React.Component<Props> {
     render(){
             const tourney = this.props.tournament
             return (
-                <div style={{position:'relative', display:'flex', justifyContent:'center', borderRadius:'5px', margin:'1px', width:'100%', height:'100%', overflowX:'auto'}}>
+                <div style={{position:'relative', display:'flex', justifyContent:'center', borderRadius:'5px', margin:'1px', width:'100%', height:'100%', overflow:'auto'}}>
                     {this.props.modalState && <div style={{position:'absolute', top:0, left:0}}>{this.getModal()}</div>}
                     {tourney ? 
                     <div>
-                        {this.props.tournament.isVoting && <div style={{position:'absolute', top:0, left:0}}><Voting/></div>}
-                        {!this.props.me.tournamentId && !this.props.tournament.hasStarted && Button(true, ()=>onShowModal(Modal.CHOOSE_EMPLOYMENT), 'Join Tournament')}
+                        {tourney.isVoting && <div style={{position:'absolute', top:0, left:0}}><Voting/></div>}
+                        {!this.props.me?.tournamentId && !tourney.hasStarted && Button(true, ()=>onShowModal(Modal.CHOOSE_EMPLOYMENT), 'Join Tournament')}
                         <div style={{display:'flex'}}>
                             {new Array(tourney.activeRound).fill({}).map((b,i)=>
-                            <div style={{width:'100px', textAlign:'center'}}>Round {i}</div>
+                            <div style={{width:'100px', textAlign:'center'}}>Round {i+1}</div>
                             )}
                         </div>
                         <div style={{overflow:'auto', height:'55vh'}}>
                             {new Array(tourney.activeRound).fill({}).map((b,i)=>
-                            <div style={{width:'100px'}}><BracketView round={i}/></div>
+                            <div style={{width:'100px'}}><BracketView round={i+1}/></div>
                             )}
                         </div>
                     </div> : 

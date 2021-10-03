@@ -2,7 +2,6 @@ import * as React from 'react'
 import AppStyles, { colors } from '../../AppStyles';
 import { Button, TopBar } from '../Shared';
 import { onJoinMatch, onHideModal, onUpdatePlayer, onShowModal } from '../uiManager/Thunks';
-import { connect } from 'react-redux';
 import Dialog from './Dialog';
 import { Avatars, Modal } from '../../enum';
 import Tooltip from 'rc-tooltip'
@@ -39,7 +38,7 @@ export default class Bracket extends React.PureComponent<Props, State> {
                     {this.state.player.uid === this.props.myId && Button(true, ()=>onShowModal(Modal.EDIT_BUILD), 'Edit')}
                 </div>
             </Tooltip> : 
-            <h5>Load...</h5>
+            <h5>{"<empty>"}</h5>
         )
     }
 }

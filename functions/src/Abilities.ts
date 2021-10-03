@@ -360,5 +360,50 @@ export const Abilities:Record<Ability, AbilityData> = {
         capitalCost: 0,
         capitalDmg: 0,
         capitalGain: 0
+    },
+    [Ability.LicensingGuild]: {
+        type: Ability.LicensingGuild,
+        name: Ability.LicensingGuild,
+        description: '',
+        corp: Corporation.Elysium,
+        moraleCost: 0,
+        moraleDmg: 0,
+        moraleGain: 0,
+        soulCost: 0,
+        soulDmg: 0,
+        soulGain: 0,
+        capitalCost: 0,
+        capitalDmg: 0,
+        capitalGain: 0
+    },
+    [Ability.OrganDRM]: {
+        type: Ability.OrganDRM,
+        name: Ability.OrganDRM,
+        description: '',
+        corp: Corporation.Elysium,
+        moraleCost: 0,
+        moraleDmg: 0,
+        moraleGain: 0,
+        soulCost: 0,
+        soulDmg: 0,
+        soulGain: 0,
+        capitalCost: 0,
+        capitalDmg: 0,
+        capitalGain: 0
+    },
+    [Ability.WarForTerror]: {
+        type: Ability.WarForTerror,
+        name: Ability.WarForTerror,
+        description: '',
+        corp: Corporation.Rontheon,
+        moraleCost: 0,
+        moraleDmg: 0,
+        moraleGain: 0,
+        soulCost: 0,
+        soulDmg: 0,
+        soulGain: 0,
+        capitalCost: 0,
+        capitalDmg: 0,
+        capitalGain: 0
     }
 }
