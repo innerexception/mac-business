@@ -23,6 +23,6 @@ export default class DebouncedButton extends React.Component<Props, State> {
     }
 
     render(){
-        return Button(!this.state.isLoading, this.debounce, this.state.isLoading ? this.props.disabledText : this.props.text)
+        return Button(!this.state.isLoading && !this.props.disabled, this.debounce, this.state.isLoading ? this.props.disabledText : this.props.text)
     }
 }

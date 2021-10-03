@@ -12,14 +12,14 @@ const appReducer = (state = getInitialState(), action:any):RState => {
         case UIReducerActions.LOGIN_SUCCESS:
             return { ...state, onlineAccount: action.user, modalState: null}
         case UIReducerActions.MATCH_UPDATED:
-            return { ...state, tournament: action.match }
+            return { ...state, tournament: {...action.match} }
         case UIReducerActions.LEAVE_MATCH:
             return { ...state, modalState: {modal: Modal.MENU }}
         case UIReducerActions.LOGOUT:
             if(state.onlineAccount) Provider.unsubscribeTourney(state.onlineAccount.uid)
             return getInitialState()
         case UIReducerActions.UPDATE_PLAYER:
-            return { ...state, onlineAccount: action.player}
+            return { ...state, onlineAccount: {...action.player}}
         case UIReducerActions.JOIN_EXISTING:
             return { ...state, onlineAccount: action.user, modalState: null, tournament: action.match }
         default:

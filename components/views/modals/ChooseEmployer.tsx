@@ -5,6 +5,7 @@ import { Corporations, Corporation, Corpos } from '../../../enum';
 import { onHideModal } from '../../uiManager/Thunks';
 import { connect } from 'react-redux';
 import AppStyles from '../../../AppStyles';
+import DebouncedButton from '../DebouncedButton';
 
 interface Props {
     me?:PlayerStats
@@ -43,7 +44,7 @@ export default class ChooseEmployer extends React.PureComponent<Props, State> {
                 <h4 style={{textAlign:'center', marginBottom:'1em'}}>Choose a subsidiary to represent</h4>
                 <div>
                     <div style={{display:'flex'}}>
-                        <div style={{marginBottom:'1em', width:'85%'}}>
+                        <div style={{marginBottom:'1em', width:'350px'}}>
                             <div>
                                 <h6 style={{whiteSpace:'pre-wrap', fontSize:'6px'}}>{data.logo}</h6>
                             </div>
@@ -60,7 +61,7 @@ export default class ChooseEmployer extends React.PureComponent<Props, State> {
                     <input value={this.state.name} onChange={(e)=>this.setState({name:e.currentTarget.value})}/>
                 </div>
                 <div style={{display:"flex", marginTop:'1em', justifyContent:'space-between'}}>
-                    {Button(this.state.name ? true : false, ()=>this.tryJoin(employer), 'Sign Handbook (in blood)')}
+                    <DebouncedButton disabledText="Signing..." text="Sign Handbook (in blood)" onClick={()=>this.tryJoin(employer)}/>
                     or
                     {Button(this.state.name ? true : false, onHideModal, 'Spectate')}
                 </div>

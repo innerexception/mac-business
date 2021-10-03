@@ -51,7 +51,7 @@ export default class ViewscreenFrame extends React.Component<Props> {
                         </div>
                         <div style={{overflow:'auto', maxHeight:'75vh', width:'100%'}}>
                             {new Array(tourney.activeRound).fill({}).map((b,i)=>
-                            <div style={{width:'200px'}}><BracketView round={i+1}/></div>
+                            <div style={{width:'200px'}}><BracketView key={Math.random()} round={i+1}/></div>
                             )}
                         </div>
                         {tourney.hasStarted && 
